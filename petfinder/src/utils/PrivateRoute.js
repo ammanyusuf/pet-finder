@@ -11,7 +11,7 @@ const PrivateRoutes = () => {
         return flag
     }
 
-    let auth = {'token':hasJWT}
+    let auth = {'token':hasJWT()}
     return(
         auth.token ? <Outlet/> : <Navigate to="/login"/>
         
