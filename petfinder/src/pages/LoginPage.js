@@ -1,78 +1,42 @@
-import React, {useContext, useLayoutEffect, useState} from 'react'
-// import AuthContext from '../context/AuthContext'
-import { useEffect } from 'react'
-// usehistory eq from react 5
-import { useNavigate } from 'react-router'
+import React from "react";
+import axios from "axios";
+import { setAuthToken } from "../context/setAuthToken"
 
-function LoginPage () {
-    // const [errorMessage, setErrorMessage] = useState("")
-    const navigate = useNavigate()
-    // let {loginUser} = useContext(AuthContext)
-   
-    
-    
-    async function handleLogin(e) {
+function LoginPage() {
 
-
-        e.preventDefault()
-
-        const form = e.target;
-
-        const user = {
-            username: form[0].value,
-            password: form[1].value
-        }
-
-        try {
-            const res = await fetch("http://localhost:4000/api/user/login", {
-                method: "POST",
-                headers: {
-                    "Content-type": "application/json"
-                },
-                body: JSON.stringify(user)
-            })
-            const data = await res.json()
-            localStorage.setItem("token", data.token)
-            // setErrorMessage(data.message)
-        } catch(err) {
-            
-        }
+  async function handleSubmit(e)  {
+    e.preventDefault()
+    const form = e.target;
+    //reqres registered sample user
+    const loginInfo = {
+      username: form[0].value,
+      password: form[1].value
     }
-    //     fetch("http://localhost:4000/api/user/login", {
-    //         method: "POST",
-    //         headers:{
-    //             "Content-type": "application/json"
-    //         },
-    //         body: JSON.stringify(user) 
-    //     })
-    //     .then(res => res.json())
-    //     .then(data => {
-    //         localStorage.setItem("token", data.token)
-    //     })
-    // }
 
-    useLayoutEffect(() => {
-        fetch("http://localhost:4000/api/user/login", {
-            headers: {
-                "x-access-token": localStorage.getItem("token")
-            }
-        })
+    axios.post("http://localhost:4000/api/user/login", loginInfo)
+      .then(response => {
+        //get token from response
+        const token = response.data.token;
 
-        .then(res => res.json())
+        //set JWT token to local
+        localStorage.setItem("token", token);
 
-        .then(data => data.isLoggedIn ? navigate.push("/home"): null)
-        // .catch(err => setErrorMessage(err)) 
-    }, [navigate])
+        //set token to axios common header
+        setAuthToken(token);
 
-    return (
-   
-            <form onSubmit={event => handleLogin(event)}>
+        //redirect user to home page
+        window.location.href = '/Home'
+
+      })
+      .catch(err => console.log(err));
+  };
+
+  return (
+    <form onSubmit={event => handleSubmit(event)}>
                 <input type="text" name="username" placeholder="Enter Username" />
                 <input type="password" name="password" placeholder="Enter Password" />
                 <input type="submit" value="Submit"/>
             </form>
-    
-    )
+  );
 }
-
-export default LoginPage;
+export default LoginPage
