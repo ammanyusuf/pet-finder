@@ -1,0 +1,4 @@
+References used for Routing and JWT frontend Authentication updates.
+https://www.permify.co/post/jwt-authentication-in-react
+https://www.youtube.com/watch?v=xjMP0hspNLE
+https://www.youtube.com/watch?v=2k8NleFjG7I
