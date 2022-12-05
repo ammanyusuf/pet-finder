@@ -2,8 +2,11 @@ import './App.css';
 import React, { useState, useCallback, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import HomePage from './pages/HomePage';
-
 import LoginPage from './pages/LoginPage';
+import AddPost from './AddPosts';
+import AddPet from './AddPet';
+import PetFeed from './PetFeed';
+
 import PrivateRoutes from './utils/PrivateRoute';
 import Feed from './Feed'
 import ViewPost from './ViewPost'
@@ -63,7 +66,19 @@ function App() {
         <Router>
           <Navbar/>
           <Routes>
+          /*CreatePet/Post
+            <Route element={<PrivateRoutes />}>
+                <Route element={<HomePage/>} path="/Home" exact/>
+                
+            </Route>
+            <Route element={<LoginPage/>} path="/login"/>
+            <Route element={<AddPost/>} path="/createPosts"/>
+            <Route element={<AddPet/>} path="/AddPet"/>
+            <Route element={<PetFeed/>} path="/PetFeed"/>
+            CreatePetPost ends here*/
+            /* main is here*/
             {routes}
+            /* main ends here */
           </Routes>
       </Router>
     </AuthContext.Provider>

@@ -5,7 +5,7 @@ import moment from 'moment'
 
 const Feed = () =>{
     const [posts, setPosts] = useState([]);
-
+    
     useEffect(() => {
       async function fetchPosts() {
        fetch("http://localhost:4000/api/posts")

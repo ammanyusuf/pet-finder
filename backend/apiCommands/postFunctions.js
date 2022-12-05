@@ -18,7 +18,9 @@ const getPost = async (req, res) =>
 {
     const { id } = req.params
 
-    const post = await Posts.Post.findById({_id: id}).populate({path :'comments', populate : 'author'}).populate('author')
+
+    const post = await Posts.Post.findById({_id: id}).populate({path :'comments', populate : 'author'}).populate('author');
+
    
     res.status(200).json(post)
     
@@ -28,14 +30,23 @@ const getPost = async (req, res) =>
 const makePost = async (req, res) => {
 
     //input fields will be populated into json object to be used to create post
-    const {title, description, pet, resolved, dateLost, Location} = req.body
-
+    const {title, description, pet, resolved, dateLost, location} = req.body
+    // const thepet = 
+    console.log(req.body)
+    const pet1 = await Posts.Pet.findOne({_id : pet})
+    
+    if(pet1.photos.length() > 0){
+        const photo = pet1.photos[0]
+    }else{
+        const photo = 'https://res.cloudinary.com/dpcevmfx3/image/upload/v1668630626/lost_pet_cartoon_ildgji.jpg'
+    }
 
     // add to the database
     let author = req.user.id
+
     console.log(author)
     try {
-        const newPost = await Posts.Post.create({title, description, author, pet, resolved, dateLost, Location})
+        const newPost = await Posts.Post.create({title, description, author, pet, resolved, dateLost, location, photo})
         res.status(200).json(newPost)
     } catch (error) {
         res.status(400).json({ error: error.message })

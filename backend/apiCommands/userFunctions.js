@@ -2,12 +2,14 @@ require("dotenv").config();
 const db = require('../Models/DB')
 const mongoose = require('mongoose')
 const { response } = require('express')
-
+const cloudinary = require('cloudinary');
 
 const jwt = require("jsonwebtoken")
 const bcrypt = require("bcrypt")
-const { json } = require('body-parser')
+const { json } = require('body-parser');
+// const { cloudinary_js_config } = require("../utils/cloudinary.config");
 
+// mongoose.set("useCreateIndex", true, "useFindandModify", false);
 
 //User registration
 const registerUser = async(req, res) =>
@@ -15,7 +17,7 @@ const registerUser = async(req, res) =>
     //there are the fields needed to register a user
     //create a form with these fields for frontend
     let {username, name, email, password, dob} = req.body
-
+    const picture = 'https://res.cloudinary.com/dpcevmfx3/image/upload/v1668631403/nopp_dkvmzd.png'
 
     const userInDb = await db.User.findOne({username : username})
 
@@ -40,7 +42,8 @@ const registerUser = async(req, res) =>
         username: username,
         password: req.body.password,
         email: email,
-        dateOfBirth: dob
+        dateOfBirth: dob,
+        picture: picture
         });
         
     newUser.save()
@@ -156,10 +159,28 @@ const getProfile = async (req, res) =>
 const addPet = async (req, res) =>
 {
     //a new pet will need these fields to be created
-    let {name, animal, breed, tags} = req.body
+    console.log('hi');
+    let photos = []
+    let {name, animal, breed, tags, image} = req.body
+    tags = tags.split(",");
+    const files = req.files;
+    console.log(image);
+    console.log(breed)
+    for (const file of files) {
+        console.log('hi there')
+        await cloudinary.v2.uploader.upload(file.path, function(err,result){
+            if (err){
+                req.json(err.message);
+            }
+            console.log(result.secure_url)
+            photos.push(result.secure_url)
+            
+        })
+}
+    console.log(photos)
     
     try {
-        const newPet = await db.Pet.create({name, animal, breed, tags})
+        const newPet = await db.Pet.create({name, animal, breed, tags, photos})
         const petOwner = await db.User.findOne({username: req.user.username})
 
         petOwner.pets.push(newPet._id)
@@ -194,6 +215,26 @@ const updateUser = async (req, res) => {
     res.status(200).json(user)
 }
 
+const addProfilePic = async (req, res) => {
+   
+    cloudinary.v2.uploader.upload(req.file.path, function(err,result){
+        if (err){
+            req.json(err.message);
+        }
+        
+        const update = { picture: result.secure_url };
+        const userToUpdate = db.User.findOneAndUpdate({_id: req.user.id},update,{ strict: false })
+
+        if (!userToUpdate) {
+            return res.status(400).json({error: 'No such User'})
+        }
+
+    })
+    const user = await db.User.findOne({_id: req.user.id}).populate('pets')
+
+    res.status(200).json(user)
+}
+
 //gets a list of all of the logged in user's posts.
 //url: api/user/myPosts
 //all fields are populated
@@ -215,6 +256,35 @@ const getMyPets = async(req,res) => {
     res.status(200).json(pets)
 }
 
+const addPetPic = async(req,res) => {
+    
+    console.log(req.user.username)
+    // let photos = []
+    const files = req.files;
+    const {id} = req.params;
+
+    const pet = await db.Pet.findOne({_id : id})
+    
+    for (const file of files) {
+        console.log('hi there')
+        await cloudinary.v2.uploader.upload(file.path, function(err,result){
+            if (err){
+                req.json(err.message);
+            }
+            console.log(result.secure_url)
+            pet.photos.push(result.secure_url)
+            
+        })
+
+        await pet.save();
+}
+    
+    const pets = await db.User.findOne({username: req.user.username}).populate('pets').select('pets -_id')
+   
+
+    res.status(200).json(pets)
+}
+
 module.exports = {
     getUser,
     updateUser,
@@ -224,5 +294,7 @@ module.exports = {
     addPet,
     getMyPosts,
     getMyPets,
+    addProfilePic,
+    addPetPic,
     verifyJWT
     }

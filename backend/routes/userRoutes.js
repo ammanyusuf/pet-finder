@@ -1,6 +1,7 @@
 const express = require('express')
+const upload = require("../utils/multer.js");
 
-const {getUser, updateUser, registerUser, loginUser, getProfile, addPet, getMyPosts, getMyPets, verifyJWT} = require('../apiCommands/userFunctions')
+const {getUser, updateUser, registerUser, loginUser, getProfile, addPet, getMyPosts, getMyPets, addProfilePic, addPetPic, verifyJWT} = require('../apiCommands/userFunctions')
 
 const router = express.Router()
 
@@ -25,11 +26,15 @@ router.get('/myPosts', verifyJWT, getMyPosts)
 
 router.get('/myPets', verifyJWT, getMyPets)
 
+//router.patch('/myPets/:id', verifyJWT, upload.array("image", 10), addPetPic)
+
 router.get('/:id', getUser)
 
 router.get('/', verifyJWT, getProfile)
 
-router.post('/addPet', verifyJWT, addPet)
+router.post('/addPet', verifyJWT, upload.array("image", 10), addPet)
+
+//router.patch('/addPicture', verifyJWT, upload.single("image"), addProfilePic)
 
 router.patch('/', verifyJWT, updateUser)
 
