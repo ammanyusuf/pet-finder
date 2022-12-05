@@ -8,7 +8,7 @@ const petFeed = () =>{
 
     useEffect(() => {
       async function fetchPets() {
-       fetch("http://localhost:4000/api/myPosts")
+       fetch("http://localhost:4000/api/myPosts", )
       .then(res => res.json())
       .then(
         (result) => {
