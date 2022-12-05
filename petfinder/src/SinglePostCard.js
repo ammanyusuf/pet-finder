@@ -1,4 +1,4 @@
-import {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -15,12 +15,22 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Pagination from '@mui/material/Pagination';
 
-export const PostCard = (props) =>{
+import { ViewComment } from './ViewComment';
+import  PostComment from './PostComment';
+
+export const SinglePostCard = (props) =>{  
+  const sortTime = (time) =>{
+    time.sort(function (a, b){
+      return Date.parse(b.dateLost)-Date.parse(a.dateLost);
+    });   
+  }
+
   return (
-    <Card variant="outlined"  style={{ border: "1px solid black" }}>
-      <CardActionArea href={`\ViewPost?id=${props._id}`}>
-      <CardHeader
+    <React.Fragment>
+     <Card variant="outlined"  style={{ border: "1px solid black" }}>
+       <CardHeader
         avatar={
           <Avatar src={props.author.picture}>
           </Avatar>
@@ -39,7 +49,15 @@ export const PostCard = (props) =>{
           Description: {props.description}
         </Typography>
       </CardContent>
-      </CardActionArea>
     </Card>
+    <PostComment post_id={props._id} />
+    {sortTime(props.comments)}
+    {props.comments.map((comment) =>
+        <div key={comment._id}>
+            <ViewComment {...comment} post_id={props._id} />
+        </div>
+        )}
+    </React.Fragment>
+
   );
 }
