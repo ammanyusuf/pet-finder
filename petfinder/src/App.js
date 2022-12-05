@@ -1,8 +1,10 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import HomePage from './pages/HomePage';
-
 import LoginPage from './pages/LoginPage';
+import AddPost from './AddPosts';
+import AddPet from './AddPet';
+
 import PrivateRoutes from './utils/PrivateRoute';
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
                 
             </Route>
             <Route element={<LoginPage/>} path="/login"/>
+            <Route element={<AddPost/>} path="/createPosts"/>
+            <Route element={<AddPet/>} path="/AddPet"/>
           </Routes>
       </Router>
     </div>
