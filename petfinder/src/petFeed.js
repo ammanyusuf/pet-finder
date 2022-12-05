@@ -1,44 +1,67 @@
 import React, {useState, useEffect} from 'react'
-
+import {Button, Paper, TextField} from "@mui/material";
+import ControlPointIcon from '@mui/icons-material/ControlPoint';
+import Typography from '@mui/material/Typography';
 import { PostCard } from "./PostCard"
-import moment from 'moment'
+import { PetCard } from "./PetCard"
+import {Link} from 'react-router-dom'
 
-const petFeed = () =>{
+
+export const PetFeed = () =>{
     const [pets, setPets] = useState([]);
 
     useEffect(() => {
       async function fetchPets() {
-       fetch("http://localhost:4000/api/myPosts", )
+       fetch("http://localhost:4000/api/user/myPets", {
+        method: "GET",
+        headers: {
+            'x-access-token': localStorage.getItem("token")
+        }})
       .then(res => res.json())
       .then(
         (result) => {
-          let nonResolved = Array.from(result)
-          nonResolved = nonResolved.filter(x => x.resolved === false)
-          let recentPosts = Array.from(nonResolved)
-          recentPosts.sort ( function (a, b){
-            return Date.parse(b.dateLost)-Date.parse(a.dateLost);
-          });          
-          setPosts(recentPosts);
-          console.log(recentPosts);
+        let myPetter = result.pets
+        //   nonResolved = nonResolved.filter(x => x.resolved === false)
+        //let recentPosts = Array.from(myPetter)
+        //   recentPosts.sort ( function (a, b){
+        //     return Date.parse(b.dateLost)-Date.parse(a.dateLost);
+        //   });
+        //console.log(myPetter)          
+        setPets(myPetter);
+        console.log(myPetter);
+        console.log(result)
         },
         (error) => {
             console.log(error);
           }
         )
         }
-        fetchPosts();
+        fetchPets();
       }, []);
 
       return (
-        <React.Fragment>
-        {posts.map((post) =>
-        <div key={post._id}>
-            <PostCard {...post} />
-        </div>
-        )}
-        </React.Fragment>
+        
+         <React.Fragment>
+        <Link to="/AddPet">
+        <Button onClick={handleSubmit} color="primary" sx={{ p: '10px' }} aria-label="control-point">
+        <Typography variant="body2" color="text.primary">
+          Add Pet
+        </Typography>
+        </Button>
+        </Link>
+        {pets && pets.map((pet) =>
+         <div key={pet._id}>
+             <PetCard {...pet} />
+         </div>
+         )}
+         </React.Fragment>
       )
 
 }
 
-export default petFeed;
+function handleSubmit() {
+  console.log("we will do this")
+}
+
+
+export default PetFeed

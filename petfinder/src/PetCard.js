@@ -16,30 +16,34 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-export const PostCard = (props) =>{
+export const PetCard = (props) =>{
   return (
     <Card variant="outlined"  style={{ border: "1px solid black" }}>
-      <CardActionArea href={`\ViewPost?id=${props._id}`}>
+      <CardActionArea>
       <CardHeader
-        avatar={
-          <Avatar src={props.author.picture}>
-          </Avatar>
-        }
-        title={props.title}
-        subheader={`Author: ${props.author.username}`}
+        // avatar={
+        //   <Avatar src={props.author.picture}>
+        //   </Avatar>
+        // }
+        title={props.name}
+        subheader={`Animal: ${props.animal} Breed: ${props.breed}`}
+        
       />
       <CardMedia
         component="img"
         height="200"
-        image={props.photo}
+        image={props.photos[0]}
         alt="Missing"
       />
       <CardContent>
         <Typography variant="body2" color="text.primary">
-          Description: {props.description}
+        {props.tags.map((tag) =>
+         <span>{tag}      </span>
+        )}
         </Typography>
       </CardContent>
       </CardActionArea>
     </Card>
   );
 }
+
