@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import { styled } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardHeader from '@mui/material/CardHeader';
@@ -20,7 +20,7 @@ import Pagination from '@mui/material/Pagination';
 import { ViewComment } from './ViewComment';
 import  PostComment from './PostComment';
 
-export const SinglePostCard = (props) =>{  
+export const SinglePostCard = (props) =>{ 
   const sortTime = (time) =>{
     time.sort(function (a, b){
       return Date.parse(b.dateLost)-Date.parse(a.dateLost);

@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useContext} from 'react'
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
@@ -15,9 +15,11 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { Stack } from '@mui/system';
+import { AuthContext } from './context/auth-context'
+
 
 export default function PostComment({post_id}) {
-
+  const auth = useContext(AuthContext);
   const [comment, setComment] = useState("");
   const [errorMessage, setErrorMessage] = useState("error");
   const [error, setError] = useState(false);
@@ -25,6 +27,9 @@ export default function PostComment({post_id}) {
 
   const onChange = (e) => setComment(e.target.value);
   const handleSubmit = async  () => {
+    if(!auth.isLoggedin){
+      return;
+    }
     if (comment.replace(/\s/g, '').length === 0) {
       // comment is only white space
       setError(true);
@@ -84,6 +89,7 @@ export default function PostComment({post_id}) {
           Comment added!
         </Alert>
       }
+      {auth.isLoggedIn &&
       <Paper component="form" sx={{ p: '2px 4px', display: 'flex', alignItems: 'center', width: 400 }}>
           <InputBase
               onChange={onChange}
@@ -97,6 +103,7 @@ export default function PostComment({post_id}) {
               <ControlPointIcon />
           </IconButton>
       </Paper>
+      }
     </React.Fragment>
   );
 }
