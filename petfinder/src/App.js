@@ -47,6 +47,10 @@ function App() {
       <React.Fragment>
         <Route element={<Feed/>} path="/Home" exact/>
         <Route element={<ViewPost/>} path="/ViewPost"/>
+
+        <Route element={<AddPost/>} path="/createPosts"/>
+        <Route element={<AddPet/>} path="/AddPet"/>
+        <Route element={<PetFeed/>} path="/PetFeed"/>
       </React.Fragment>
       );
   } else {
@@ -69,20 +73,38 @@ function App() {
           /*CreatePet/Post
             <Route element={<PrivateRoutes />}>
                 <Route element={<HomePage/>} path="/Home" exact/>
-                
             </Route>
-            <Route element={<LoginPage/>} path="/login"/>
-            <Route element={<AddPost/>} path="/createPosts"/>
-            <Route element={<AddPet/>} path="/AddPet"/>
-            <Route element={<PetFeed/>} path="/PetFeed"/>
-            CreatePetPost ends here*/
-            /* main is here*/
             {routes}
-            /* main ends here */
           </Routes>
       </Router>
     </AuthContext.Provider>
   );
+  /*
+  return (
+    <AuthContext.Provider value={{isLoggedIn: !!token, token: token, name:name, login:login, logout: logout}}>
+        <Router>
+          <Navbar/>
+          <Routes>
+          ///CreatePet/Post
+            <Route element={<PrivateRoutes />}>
+                <Route element={<HomePage/>} path="/Home" exact/>
+                
+            </Route>
+
+            <Route element={<LoginPage/>} path="/login"/>
+            <Route element={<AddPost/>} path="/createPosts"/>
+            <Route element={<AddPet/>} path="/AddPet"/>
+            <Route element={<PetFeed/>} path="/PetFeed"/>
+
+            CreatePetPost ends here
+            //main is here
+            {routes}
+            //main ends here //
+          </Routes>
+      </Router>
+    </AuthContext.Provider>
+  );
+  */
 }
 
 export default App;
