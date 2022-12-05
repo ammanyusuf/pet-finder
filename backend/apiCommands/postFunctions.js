@@ -18,11 +18,10 @@ const getPost = async (req, res) =>
 {
     const { id } = req.params
 
+
     const post = await Posts.Post.findById({_id: id}).populate({path :'comments', populate : 'author'}).populate('author');
 
-
    
-
     res.status(200).json(post)
     
 }
@@ -208,15 +207,32 @@ const updateComment = async (req, res) => {
     const { id, cid } = req.params
 
 
+    const { upvote } = req.body
+
     if (!mongoose.Types.ObjectId.isValid(id)) {
         return res.status(400).json({error: 'No such post'})
     }
 
-    const comment = await Posts.Comment.findOneAndUpdate({_id: cid})
-    comment.upvotes++      
-    await comment.save()
+    // let comment = '';
 
-    res.status(200).json(comment)
+    if (upvote) {
+        const comment = await Posts.Comment.findOneAndUpdate(
+            {_id: cid}, 
+            {$inc : {'upvotes' : 1}}, 
+            { new: true }
+            );
+        res.status(200).json(comment)
+    } else {
+        console.log('negative')
+        const comment = await Posts.Comment.findOneAndUpdate(
+            {_id: cid}, 
+            {$inc : {'upvotes' : -1}}, 
+            { new: true }
+            );
+        res.status(200).json(comment)
+    }
+
+    // res.status(200).json(comment)
 
     //console.log("We are updating this post to resolve or comment", id)
     //res.send("We have updated your post, happy pet finding " + id + "!")

@@ -83,7 +83,8 @@ const loginUser = async (req, res) =>
                                                                                             }
                                                                                             return res.json({
                                                                                                 message: 'Login Successfully',
-                                                                                                token: 'Bearer ' + token
+                                                                                                token: 'Bearer ' + token,
+                                                                                                username: person.username
                                                                                             })                                
                                                                                         })    
             }
