@@ -1,109 +1,179 @@
-import React, {useState, useEffect} from 'react'
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import Divider from '@mui/material/Divider';
-import ListItemText from '@mui/material/ListItemText';
-import ListItemAvatar from '@mui/material/ListItemAvatar';
-import Avatar from '@mui/material/Avatar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import React, { useState, useEffect, useContext } from "react";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/ListItem";
+import Divider from "@mui/material/Divider";
+import ListItemText from "@mui/material/ListItemText";
+import ListItemAvatar from "@mui/material/ListItemAvatar";
+import Avatar from "@mui/material/Avatar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import ThumbUpIcon from "@mui/icons-material/ThumbUp";
+import ThumbDownIcon from "@mui/icons-material/ThumbDown";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { AuthContext } from "./context/auth-context";
 
-import moment from 'moment'
+import moment from "moment";
 
+export const ViewComment = (props) => {
+  const auth = useContext(AuthContext);
+  const [upvotes, setUpvotes] = useState(props.upvotes);
+  const [cantVote, setVote] = useState(false);
+  const [canDelete, setCanDelete] = useState(false);
+  const [showComment, setShowComment] = useState(true);
+  const calcTimeFromNow = (time) => {
+    let timeFromNow = moment(time, "YYYYMMDD").fromNow();
+    return timeFromNow;
+  };
 
-export const ViewComment = (props) =>{
-    const [upvotes, setUpvotes] = useState(props.upvotes);
-    const [cantVote, setVote] = useState(false);
-    const calcTimeFromNow = (time) =>{ 
-        let timeFromNow = moment(time, "YYYYMMDD").fromNow();
-        return timeFromNow;
+  useEffect(() => {
+    if (auth.isLoggedIn && auth.userId === props.author._id) {
+      setCanDelete(true);
     }
-    const upVote = async () =>{
-            let res = await fetch(`http://localhost:4000/api/posts/${encodeURIComponent(props.post_id)}/${encodeURIComponent(props._id)}`, {
-              method: "PATCH",
-              body:  JSON.stringify({
-                'upvote': true,
-              }),
-              headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': localStorage.getItem("token")
-              }
-            });
-        
-            if (res.ok) {
-                setUpvotes(upvotes => upvotes + 1);
-                setVote(true);
-                console.log(upvotes);
-            } else {
-                console.log(res);
-            }
+  }, [auth.isLoggedIn]);
+
+  const deleteComment = async () => {
+    let res = await fetch(
+      `http://localhost:4000/api/posts/${encodeURIComponent(
+        props.post_id
+      )}/${encodeURIComponent(props._id)}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": auth.token,
+        },
+      }
+    );
+
+    if (res.ok) {
+      setShowComment(false);
+    } else {
+      console.log(res);
     }
-    const downVote = async () =>{
-        let res = await fetch(`http://localhost:4000/api/posts/${encodeURIComponent(props.post_id)}/${encodeURIComponent(props._id)}`, {
-            method: "PATCH",
-            body:  JSON.stringify({
-              'upvote': false,
-            }),
-            headers: {
-              'Content-Type': 'application/json',
-              'x-access-token': localStorage.getItem("token")
-            }
-          });
-      
-          if (res.ok) {
-              setUpvotes(upvotes => upvotes - 1);
-              setVote(true);
-          } else {
-              console.log(res);
-          }
+  };
+  const upVote = async () => {
+    let res = await fetch(
+      `http://localhost:4000/api/posts/${encodeURIComponent(
+        props.post_id
+      )}/${encodeURIComponent(props._id)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          upvote: true,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": auth.token,
+        },
+      }
+    );
+
+    if (res.ok) {
+      setUpvotes((upvotes) => upvotes + 1);
+      setVote(true);
+    } else {
+      console.log(res);
     }
-      return (
-        <React.Fragment>
-        <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-        <ListItem alignItems="flex-start"
-        secondaryAction={
-            <React.Fragment>
-            <Typography
-                    sx={{ display: 'inline' }}
-                    component="span"
-                    variant="body2"
-                    color="text.primary"
+  };
+  const downVote = async () => {
+    let res = await fetch(
+      `http://localhost:4000/api/posts/${encodeURIComponent(
+        props.post_id
+      )}/${encodeURIComponent(props._id)}`,
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          upvote: false,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+          "x-access-token": auth.token,
+        },
+      }
+    );
+
+    if (res.ok) {
+      setUpvotes((upvotes) => upvotes - 1);
+      setVote(true);
+    } else {
+      console.log(res);
+    }
+  };
+
+  return (
+    <React.Fragment>
+      {showComment && (
+        <List
+          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+        >
+          <ListItem
+            alignItems="flex-start"
+            secondaryAction={
+              <React.Fragment>
+                <Typography
+                  sx={{ display: "inline" }}
+                  component="span"
+                  variant="body2"
+                  color="text.primary"
                 >
-                    {upvotes}              
-            </Typography>
-            <IconButton edge="end" aria-label="delete" onClick={upVote} disabled={cantVote}>
-              <ThumbUpIcon />
-            </IconButton>
-            <IconButton edge="end" aria-label="delete" onClick={downVote} disabled={cantVote}>
-            <ThumbDownIcon />
-            </IconButton>
-            </React.Fragment>
-          }
+                  {upvotes}
+                </Typography>
+                {auth.isLoggedIn && (
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={upVote}
+                    disabled={cantVote}
+                  >
+                    <ThumbUpIcon />
+                  </IconButton>
+                )}
+                {auth.isLoggedIn && (
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={downVote}
+                    disabled={cantVote}
+                  >
+                    <ThumbDownIcon />
+                  </IconButton>
+                )}
+                {canDelete && (
+                  <IconButton
+                    edge="end"
+                    aria-label="delete"
+                    onClick={deleteComment}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                )}
+              </React.Fragment>
+            }
           >
             <ListItemAvatar>
-            <Avatar alt="Remy Sharp" src={props.author.picture} />
+              <Avatar alt="Remy Sharp" src={props.author.picture} />
             </ListItemAvatar>
             <ListItemText
-            primary={props.author.username+" - "+calcTimeFromNow(props.createdAt)}
-            secondary={
+              primary={
+                props.author.username + " - " + calcTimeFromNow(props.createdAt)
+              }
+              secondary={
                 <React.Fragment>
-                <Typography
-                    sx={{ display: 'inline' }}
+                  <Typography
+                    sx={{ display: "inline" }}
                     component="span"
                     variant="body2"
                     color="text.primary"
-                >
-                    {props.body}              
-                    </Typography>  
+                  >
+                    {props.body}
+                  </Typography>
                 </React.Fragment>
-            }
+              }
             />
-        </ListItem>
-            <Divider variant="inset" component="li" />
+          </ListItem>
+          <Divider variant="inset" component="li" />
         </List>
+      )}
     </React.Fragment>
-    )
-
-}
+  );
+};
