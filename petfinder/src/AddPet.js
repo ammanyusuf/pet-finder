@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, Paper, TextField } from "@mui/material";
-import { Controller, Input, useForm } from "react-hook-form";
-import { joinPaths } from "@remix-run/router";
-import axios from "axios";
+
+import DialogTitle from "@mui/material/DialogTitle";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import TextField from "@mui/material/TextField";
+import DialogContentText from "@mui/material/DialogContentText";
+import Button from "@mui/material/Button";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
 import { WithContext as ReactTags } from "react-tag-input";
 import { AuthContext } from "./context/auth-context";
 
@@ -26,19 +33,26 @@ export const AddPet = () => {
   const [breed, setBreed] = useState("");
   const [animal, setAnimal] = useState("");
   const [tags, setTags] = useState([]);
-  const [image, setSelectedImage] = useState("");
+  const [images, setSelectedImages] = useState([]);
+  const [open, setOpen] = useState(false);
 
-  let handleSubmit = async (e) => {
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setName("");
+    setBreed("");
+    setAnimal("");
+    setTags([]);
+    setSelectedImages([]);
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let data = new FormData();
     let tagName = [];
-
-    // for(let i in tags)
-    // {
-    //     tagName.push(tags[i].text)
-    //     console.log(tags[i].text)
-
-    // }
 
     for (let i = 0; i < tags.length; i++) {
       tagName.push(tags[i].text);
@@ -48,13 +62,12 @@ export const AddPet = () => {
     data.append("breed", breed);
     data.append("animal", animal);
     data.append("tags", tagName);
-    data.append("image", image);
+    data.append("image", images);
     //const data = {name, breed, animal, tags, image}
-    console.log(data.get(image));
+    console.log(data.get(images));
     try {
       let res = await fetch("http://localhost:4000/api/user/addPet", {
         method: "POST",
-        // body:  JSON.stringify(data),
         body: data,
         headers: {
           // 'Content-Type': 'appli/form-data',
@@ -63,12 +76,10 @@ export const AddPet = () => {
       });
       let resJson = await res.json();
       if (res.status === 200) {
-        // setName("");
-        // setEmail("");
-        // setMessage("User created successfully");
+        handleClose();
+        window.location.reload(true);
         console.log("Success");
       } else {
-        // setMessage("Some error occured");
         console.log("Fail");
       }
     } catch (err) {
@@ -106,37 +117,34 @@ export const AddPet = () => {
 
   return (
     <React.Fragment>
-      {
-        <form onSubmit={handleSubmit} enctype="multipart/form-data">
-          <input
+      <Button variant="outlined" onClick={handleClickOpen}>
+        Add a pet
+      </Button>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>Add a pet</DialogTitle>
+        <DialogContent>
+          <TextField
             type="text"
             value={name}
             placeholder="name"
             onChange={(e) => setName(e.target.value)}
           />
-          {/* <input
-    type="text"
-    value={animal}
-    placeholder="animal"
-    onChange={(e) => setAnimal(e.target.value)}
-    /> */}
-          <input
+          <TextField
             type="text"
             value={breed}
             placeholder="breed"
             onChange={(e) => setBreed(e.target.value)}
           />
-
-          <select onChange={(e) => setAnimal(e.target.value)}>
-            <option value="⬇️ Select a Animal ⬇️">
-              {" "}
+          <Select value={animal} onChange={(e) => setAnimal(e.target.value)}>
+            <MenuItem value="⬇️ Select a Animal ⬇️">
               -- Select a Animal --{" "}
-            </option>
+            </MenuItem>
             {animalsTop50.map((animal) => (
-              <option value={animal}>{animal}</option>
+              <MenuItem key={animal} value={animal}>
+                {animal}
+              </MenuItem>
             ))}
-            {/* {Array.from(arrayFill).map((i) => <option value={i.name}>{i.name}</option>)} */}
-          </select>
+          </Select>
           <ReactTags
             tags={tags}
             delimiters={delimiters}
@@ -147,38 +155,104 @@ export const AddPet = () => {
             inputFieldPosition="bottom"
             autocomplete
           />
-          {/* Source for uploading images: https://stackoverflow.com/questions/1085801/get-selected-value-in-dropdown-list-using-javascript */}
-          <div>
-            <h1>Upload An Image of Your Doge :)</h1>
-            {image && (
-              <div>
-                <img
-                  alt="not found"
-                  width={"250px"}
-                  src={URL.createObjectURL(image)}
-                />
-                <br />
-                <button onClick={() => setSelectedImage(null)}>Remove</button>
-              </div>
-            )}
-            <br />
-
-            <br />
-            <input
-              type="file"
-              name="myImage"
-              onChange={(event) => {
-                console.log(event.target.files[0]);
-                setSelectedImage(event.target.files[0]);
-              }}
-            />
-          </div>
+          {images.map((image) => (
+            <div key={image}>
+              <img
+                alt="not found"
+                width={"250px"}
+                src={URL.createObjectURL(image)}
+              />
+              <br />
+            </div>
+          ))}
+          {/* {images && (
+            <div>
+              <img
+                alt="not found"
+                width={"250px"}
+                src={URL.createObjectURL(images)}
+              />
+              <br />
+              <Button onClick={() => setSelectedImages(null)}>
+                Remove all
+              </Button>
+            </div>
+          )} */}
+          <DialogContentText>Add images of your pet!</DialogContentText>
+          <input
+            type="file"
+            name="imagefileinput"
+            accept="image/*"
+            onChange={(event) => {
+              console.log(event.target.files[0]);
+              setSelectedImages((images) => [...images, event.target.files[0]]);
+            }}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClose}>Cancel</Button>
+          <Button onClick={handleSubmit}>Add Pet</Button>
+        </DialogActions>
+      </Dialog>
+      {/* <form onSubmit={handleSubmit} enctype="multipart/form-data">
+        <input
+          type="text"
+          value={name}
+          placeholder="name"
+          onChange={(e) => setName(e.target.value)}
+        />
+        <input
+          type="text"
+          value={breed}
+          placeholder="breed"
+          onChange={(e) => setBreed(e.target.value)}
+        />
+        <select onChange={(e) => setAnimal(e.target.value)}>
+          <option value="⬇️ Select a Animal ⬇️"> -- Select a Animal -- </option>
+          {animalsTop50.map((animal) => (
+            <option value={animal}>{animal}</option>
+          ))}
+        </select>
+        <ReactTags
+          tags={tags}
+          delimiters={delimiters}
+          handleDelete={handleDelete}
+          handleAddition={handleAddition}
+          handleDrag={handleDrag}
+          handleTagClick={handleTagClick}
+          inputFieldPosition="bottom"
+          autocomplete
+        /> */}
+      {/* Source for uploading images: https://stackoverflow.com/questions/1085801/get-selected-value-in-dropdown-list-using-javascript */}
+      {/* <div>
+          <h1>Upload An Image of Your Doge :)</h1>
+          {image && (
+            <div>
+              <img
+                alt="not found"
+                width={"250px"}
+                src={URL.createObjectURL(image)}
+              />
+              <br />
+              <button onClick={() => setSelectedImage(null)}>Remove</button>
+            </div>
+          )}
           <br />
           <br />
+          <input
+            type="file"
+            name="myImage"
+            onChange={(event) => {
+              console.log(event.target.files[0]);
+              setSelectedImage(event.target.files[0]);
+            }}
+          />
+        </div>
+        <br />
+        <br />
 
-          <button type="submit">Create</button>
-        </form>
-      }
+        <button type="submit">Create</button>
+      </form> */}
     </React.Fragment>
   );
 };

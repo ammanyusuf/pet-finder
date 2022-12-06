@@ -31,7 +31,7 @@ export const PostCard = (props) => {
         <CardMedia
           component="img"
           height="200"
-          image={props.photo}
+          image={props.photos[0]}
           alt="Missing"
           sx={{ objectFit: "contain" }}
         />

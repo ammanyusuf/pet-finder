@@ -5,26 +5,36 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import CardActionArea from "@mui/material/CardActionArea";
-import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
-import { red } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import Pagination from "@mui/material/Pagination";
-
+import NavigateNextIcon from "@mui/icons-material/NavigateNext";
+import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { ViewComment } from "./ViewComment";
 import PostComment from "./PostComment";
 
 export const SinglePostCard = (props) => {
+  const [index, setIndex] = useState(0);
+
   const sortTime = (time) => {
     time.sort(function (a, b) {
       return Date.parse(b.dateLost) - Date.parse(a.dateLost);
     });
+  };
+
+  const adjustIndexRight = () => {
+    if (index == props.photos.length - 1) {
+      setIndex(0);
+    } else {
+      setIndex((index) => index + 1);
+    }
+  };
+  const adjustIndexLeft = () => {
+    if (index == 0) {
+      setIndex(props.photos.length - 1);
+    } else {
+      setIndex((index) => index - 1);
+    }
   };
 
   return (
@@ -38,7 +48,7 @@ export const SinglePostCard = (props) => {
         <CardMedia
           component="img"
           height="200"
-          image={props.photo}
+          image={props.photos[index]}
           alt="Missing"
           sx={{ objectFit: "contain" }}
         />
@@ -47,6 +57,18 @@ export const SinglePostCard = (props) => {
             Description: {props.description}
           </Typography>
         </CardContent>
+        <CardActions>
+          <IconButton
+            edge="start"
+            aria-label="delete"
+            onClick={adjustIndexLeft}
+          >
+            <NavigateBeforeIcon />
+          </IconButton>
+          <IconButton edge="end" aria-label="delete" onClick={adjustIndexRight}>
+            <NavigateNextIcon />
+          </IconButton>
+        </CardActions>
       </Card>
       <PostComment post_id={props._id} />
       {sortTime(props.comments)}

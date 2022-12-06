@@ -45,26 +45,28 @@ export const AddPosts = () => {
     setDate(newValue);
   };
 
-  useEffect(() => {
-    async function getUserPets() {
-      await fetch("http://localhost:4000/api/user/myPets", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": auth.token,
+  async function getUserPets() {
+    console.log("Getting pets");
+    await fetch("http://localhost:4000/api/user/myPets", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "x-access-token": auth.token,
+      },
+    })
+      .then((res) => res.json())
+      .then(
+        (result) => {
+          setPets(result.pets);
+          console.log("Set pets");
         },
-      })
-        .then((res) => res.json())
-        .then(
-          (result) => {
-            setPets(result.pets);
-            return result;
-          },
-          (error) => {
-            console.log(error);
-          }
-        );
-    }
+        (error) => {
+          console.log(error);
+        }
+      );
+  }
+
+  useEffect(() => {
     getUserPets();
   }, []);
 
@@ -91,8 +93,8 @@ export const AddPosts = () => {
       if (res.status === 200) {
         console.log("Success");
         handleClose();
+        window.location.reload(true);
       } else {
-        // setMessage("Some error occured");
         console.log("Fail");
       }
     } catch (err) {

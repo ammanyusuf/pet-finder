@@ -43,11 +43,11 @@ export const PetCard = (props) => {
       <CardContent>
         <Typography variant="body2" color="text.primary">
           {props.tags.map((tag) => (
-            <span>{tag} </span>
+            <span key={tag}>{tag} </span>
           ))}
         </Typography>
       </CardContent>
-      <CardActions disableSpacing>
+      <CardActions>
         <IconButton edge="start" aria-label="delete" onClick={adjustIndexLeft}>
           <NavigateBeforeIcon />
         </IconButton>

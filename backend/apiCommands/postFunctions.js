@@ -34,11 +34,11 @@ const makePost = async (req, res) => {
   console.log(req.body);
   const pet1 = await Posts.Pet.findOne({ _id: pet });
   console.log(pet1);
-  let photo = null;
+  let photos = null;
   if (pet1.photos.length > 0) {
-    photo = pet1.photos[0];
+    photos = pet1.photos;
   } else {
-    photo =
+    photos =
       "https://res.cloudinary.com/dpcevmfx3/image/upload/v1668630626/lost_pet_cartoon_ildgji.jpg";
   }
 
@@ -55,7 +55,7 @@ const makePost = async (req, res) => {
       resolved,
       dateLost,
       location,
-      photo,
+      photos,
     });
     res.status(200).json(newPost);
   } catch (error) {

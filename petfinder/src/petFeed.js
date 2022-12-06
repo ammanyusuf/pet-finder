@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import { PostCard } from "./PostCard";
 import { PetCard } from "./PetCard";
 import { Link } from "react-router-dom";
+import AddPet from "./AddPet";
 
 import { AuthContext } from "./context/auth-context";
 
@@ -25,7 +26,6 @@ export const PetFeed = () => {
           (result) => {
             let myPets = result.pets;
             setPets(myPets);
-            console.log(pets);
           },
           (error) => {
             console.log(error);
@@ -37,7 +37,7 @@ export const PetFeed = () => {
 
   return (
     <React.Fragment>
-      <Link to="/AddPet">
+      {/* <Link to="/AddPet">
         <Button
           onClick={handleSubmit}
           color="primary"
@@ -48,7 +48,8 @@ export const PetFeed = () => {
             Add Pet
           </Typography>
         </Button>
-      </Link>
+      </Link> */}
+      <AddPet />
       {pets.map((pet) => (
         <div key={pet._id}>
           <PetCard {...pet} />
