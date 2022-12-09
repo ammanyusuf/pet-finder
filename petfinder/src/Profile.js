@@ -34,6 +34,7 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment from "moment";
+import "./App.css";
 
 
 
@@ -285,6 +286,7 @@ const Profile = () => {
               width: 50,
               height: 50,
               borderRadius: '50%'
+              
           }
       }
   
@@ -294,10 +296,11 @@ const Profile = () => {
     <React.Fragment>
        {changePicture()}
        {changePassword()}
-       {!profile && <h1>Loading...</h1>}
+       {!profile && <div class="loader"></div>}
         {/* <div>Profile! :)</div> */}
         {profile &&
         <Grid container spacing={2}>
+        <Grid item xs={2}></Grid>
         <Grid item xs={8}>
           {/* <Item>xs=4</Item> */}
           <Box
@@ -336,8 +339,10 @@ const Profile = () => {
           
             <Badge
               anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-              badgeContent="+"
-              variant="dot"
+              // BadgeContent='+'
+              badgeContent={'+'}
+              // backgroundColor='secondary'
+              // variant="dot"
               color="primary"
               overlap="circular"
               sx={badgeStyle}
@@ -440,6 +445,7 @@ const Profile = () => {
             </Box>
           </Box>
         </Grid>
+        <Grid item xs={2}></Grid>
       </Grid>}
       
       
