@@ -17,7 +17,7 @@ export default function PostComment({ post_id }) {
 
   const onChange = (e) => setComment(e.target.value);
   const handleSubmit = async () => {
-    if (!auth.isLoggedin) {
+    if (!auth.isLoggedIn) {
       return;
     }
     if (comment.replace(/\s/g, "").length === 0) {
@@ -37,8 +37,6 @@ export default function PostComment({ post_id }) {
 
     console.log(comment.trim());
 
-    let id = "636c51503e5815eb60ce7914";
-
     // post the comment
     let res = await fetch(
       `http://localhost:4000/api/posts/${encodeURIComponent(post_id)}`,
@@ -54,13 +52,13 @@ export default function PostComment({ post_id }) {
         },
       }
     );
-    console.log(res);
     if (res.ok) {
       setComment("");
       setSuccess(true);
       setTimeout(() => {
         setSuccess(false);
       }, 3000);
+      window.location.reload(false);
     } else {
       setError(true);
       setErrorMessage("Something went wrong...");

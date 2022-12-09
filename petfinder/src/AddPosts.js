@@ -21,7 +21,7 @@ export const AddPosts = () => {
   const auth = useContext(AuthContext);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [dateLost, setDate] = useState(moment());
+  const [mdateLost, setDate] = useState(null);
   const [location, setLocation] = useState("");
   const [pet, chosenPet] = useState("");
 
@@ -46,7 +46,7 @@ export const AddPosts = () => {
   };
 
   async function getUserPets() {
-    console.log("Getting pets");
+    // console.log("Getting pets");
     await fetch("http://localhost:4000/api/user/myPets", {
       method: "GET",
       headers: {
@@ -58,7 +58,7 @@ export const AddPosts = () => {
       .then(
         (result) => {
           setPets(result.pets);
-          console.log("Set pets");
+          // console.log("Set pets");
         },
         (error) => {
           console.log(error);
@@ -72,6 +72,10 @@ export const AddPosts = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(mdateLost);
+    const dateLost = moment(mdateLost).format();
+    console.log(dateLost);
+    console.log(typeof dateLost);
     const data = {
       title,
       description,
@@ -93,7 +97,7 @@ export const AddPosts = () => {
       if (res.status === 200) {
         console.log("Success");
         handleClose();
-        window.location.reload(true);
+        window.location.reload(false);
       } else {
         console.log("Fail");
       }
@@ -130,7 +134,7 @@ export const AddPosts = () => {
             </Select>
             <DateTimePicker
               label="Date and Time picker"
-              value={dateLost}
+              value={mdateLost}
               onChange={handleChange}
               renderInput={(params) => <TextField {...params} />}
             />

@@ -19,7 +19,11 @@ const UserPostFeed = () => {
         .then((res) => res.json())
         .then(
           (result) => {
-            setPosts(result);
+            let recentPosts = Array.from(result);
+            recentPosts.sort(function (a, b) {
+              return Date.parse(b.dateLost) - Date.parse(a.dateLost);
+            });
+            setPosts(recentPosts);
           },
           (error) => {
             console.log(error);

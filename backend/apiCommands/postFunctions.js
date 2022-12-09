@@ -1,6 +1,7 @@
 const Posts = require("../Models/DB");
 const mongoose = require("mongoose");
 const { response } = require("express");
+const moment = require("moment");
 
 const getPosts = async (req, res) => {
   console.log("Hello from posts");
@@ -53,7 +54,7 @@ const makePost = async (req, res) => {
       author,
       pet,
       resolved,
-      dateLost,
+      dateLost: moment(dateLost).format(),
       location,
       photos,
     });
