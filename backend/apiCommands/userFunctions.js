@@ -16,14 +16,15 @@ const { Promise } = require("mongodb");
 const registerUser = async (req, res) => {
   //there are the fields needed to register a user
   //create a form with these fields for frontend
-  let { username, name, email, password, dob } = req.body;
+  console.log(req.body);
+  let { username, name, email, password, dateOfBirth } = req.body;
   const picture =
     "https://res.cloudinary.com/dpcevmfx3/image/upload/v1668631403/nopp_dkvmzd.png";
 
   const userInDb = await db.User.findOne({ username: username });
 
   const emailInDb = await db.User.findOne({ email: email });
-  dob instanceof Date;
+  dateOfBirth instanceof Date;
 
   //email and username must be unique
   if (userInDb != null && emailInDb != null) {
@@ -38,7 +39,7 @@ const registerUser = async (req, res) => {
       username: username,
       password: req.body.password,
       email: email,
-      dateOfBirth: dob,
+      dateOfBirth: dateOfBirth,
       picture: picture,
     });
 
@@ -189,6 +190,15 @@ const addPet = async (req, res) => {
 //could use some work but currently just updates using the req body
 const updateUser = async (req, res) => {
   // const { id } = req.params
+  if(req.body.password != undefined)
+  {
+    
+    req.body.password = bcrypt.hashSync(req.body.password, 10);
+    console.log(req.body.password)
+
+  }
+  
+  
 
   const userToUpdate = await db.User.findOneAndUpdate(
     { username: req.user.username },
@@ -207,17 +217,23 @@ const updateUser = async (req, res) => {
 };
 
 const addProfilePic = async (req, res) => {
-  cloudinary.v2.uploader.upload(req.file.path, function (err, result) {
+
+  console.log(req.file);
+  // console.log(req);
+  cloudinary.v2.uploader.upload(req.file.path, async function (err, result){
     if (err) {
       req.json(err.message);
     }
 
     const update = { picture: result.secure_url };
-    const userToUpdate = db.User.findOneAndUpdate(
+    console.log(update)
+    const userToUpdate = await db.User.findOneAndUpdate(
       { _id: req.user.id },
-      update,
-      { strict: false }
+      { picture: result.secure_url },
+      {new: true, strict:false}
     );
+    console.log(result.secure_url)
+
 
     if (!userToUpdate) {
       return res.status(400).json({ error: "No such User" });

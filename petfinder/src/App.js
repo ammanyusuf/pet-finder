@@ -10,6 +10,9 @@ import LoginPage from "./pages/LoginPage";
 import AddPost from "./AddPosts";
 import AddPet from "./AddPet";
 import PetFeed from "./PetFeed";
+import Register from "./Register";
+import Profile from "./Profile";
+import Search from "./Search";
 
 import Feed from "./Feed";
 import UserPostFeed from "./UserPostFeed";
@@ -57,6 +60,9 @@ function App() {
         <Route element={<AddPost />} path="/createPosts" />
         <Route element={<AddPet />} path="/AddPet" />
         <Route element={<PetFeed />} path="/PetFeed" />
+        <Route element={<Profile />} path="/Profile" />
+        <Route elemet={<Search />} path ="/Search" />
+        {/* <Route element={<Register />} path="/Register" /> */}
       </React.Fragment>
     );
   } else {
@@ -65,6 +71,8 @@ function App() {
         <Route element={<LoginPage />} path="/login" />
         <Route element={<Feed />} path="/Home" exact />
         <Route element={<ViewPost />} path="/ViewPost" />
+        <Route element={<Register />} path="/Register" />
+        <Route elemet={<Search />} path ="/Search" />
       </React.Fragment>
     );
   }
