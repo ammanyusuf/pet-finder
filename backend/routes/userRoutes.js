@@ -34,7 +34,7 @@ router.get('/', verifyJWT, getProfile)
 
 router.post('/addPet', verifyJWT, upload.array("image", 10), addPet)
 
-//router.patch('/addPicture', verifyJWT, upload.single("image"), addProfilePic)
+router.patch('/addPicture', verifyJWT, upload.single("image"), addProfilePic)
 
 router.patch('/', verifyJWT, updateUser)
 

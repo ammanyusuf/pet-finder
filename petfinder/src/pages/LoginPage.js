@@ -50,6 +50,7 @@ function LoginPage() {
         auth.login(token, username, id);
 
         //redirect user to home page
+        window.location.href = '/Home';
       })
       .catch((err) => console.log(err));
   }
@@ -127,7 +128,7 @@ function LoginPage() {
               </Button>
               <Grid container>
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/Register" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>

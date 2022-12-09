@@ -32,6 +32,14 @@ export default function ButtonAppBar() {
             </Link>
           )}
           {auth.isLoggedIn && (
+            <Link
+              to="/Profile"
+              style={{ color: "white", textDecoration: "none" }}
+            >
+              My Profile
+            </Link>
+          )}
+          {auth.isLoggedIn && (
             <Button
               onClick={auth.logout}
               variant="contained"
