@@ -20,8 +20,10 @@ export const ViewComment = (props) => {
   const [cantVote, setVote] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
   const [showComment, setShowComment] = useState(true);
+
   const calcTimeFromNow = (time) => {
-    let timeFromNow = moment(time, "YYYYMMDD").fromNow();
+    let temp = moment(time).format();
+    let timeFromNow = moment(temp).fromNow();
     return timeFromNow;
   };
 
@@ -138,7 +140,7 @@ export const ViewComment = (props) => {
                     <ThumbDownIcon />
                   </IconButton>
                 )}
-                {canDelete && (
+                {auth.isLoggedIn && canDelete && (
                   <IconButton
                     edge="end"
                     aria-label="delete"

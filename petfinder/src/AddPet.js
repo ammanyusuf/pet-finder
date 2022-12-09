@@ -62,22 +62,21 @@ export const AddPet = () => {
     data.append("breed", breed);
     data.append("animal", animal);
     data.append("tags", tagName);
-    data.append("image", images);
-    //const data = {name, breed, animal, tags, image}
-    console.log(data.get(images));
+    for (let i = 0; i < images.length; i++) {
+      data.append("image", images[i]);
+    }
     try {
       let res = await fetch("http://localhost:4000/api/user/addPet", {
         method: "POST",
         body: data,
         headers: {
-          // 'Content-Type': 'appli/form-data',
           "x-access-token": auth.token,
         },
       });
       let resJson = await res.json();
       if (res.status === 200) {
         handleClose();
-        window.location.reload(true);
+        window.location.reload(false);
         console.log("Success");
       } else {
         console.log("Fail");
@@ -120,7 +119,7 @@ export const AddPet = () => {
       <Button variant="outlined" onClick={handleClickOpen}>
         Add a pet
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} encType="multipart/form-data" onClose={handleClose}>
         <DialogTitle>Add a pet</DialogTitle>
         <DialogContent>
           <TextField
@@ -155,8 +154,8 @@ export const AddPet = () => {
             inputFieldPosition="bottom"
             autocomplete
           />
-          {images.map((image) => (
-            <div key={image}>
+          {images.map((image, index) => (
+            <div key={index}>
               <img
                 alt="not found"
                 width={"250px"}
@@ -165,26 +164,12 @@ export const AddPet = () => {
               <br />
             </div>
           ))}
-          {/* {images && (
-            <div>
-              <img
-                alt="not found"
-                width={"250px"}
-                src={URL.createObjectURL(images)}
-              />
-              <br />
-              <Button onClick={() => setSelectedImages(null)}>
-                Remove all
-              </Button>
-            </div>
-          )} */}
           <DialogContentText>Add images of your pet!</DialogContentText>
           <input
             type="file"
             name="imagefileinput"
             accept="image/*"
             onChange={(event) => {
-              console.log(event.target.files[0]);
               setSelectedImages((images) => [...images, event.target.files[0]]);
             }}
           />
@@ -194,65 +179,6 @@ export const AddPet = () => {
           <Button onClick={handleSubmit}>Add Pet</Button>
         </DialogActions>
       </Dialog>
-      {/* <form onSubmit={handleSubmit} enctype="multipart/form-data">
-        <input
-          type="text"
-          value={name}
-          placeholder="name"
-          onChange={(e) => setName(e.target.value)}
-        />
-        <input
-          type="text"
-          value={breed}
-          placeholder="breed"
-          onChange={(e) => setBreed(e.target.value)}
-        />
-        <select onChange={(e) => setAnimal(e.target.value)}>
-          <option value="⬇️ Select a Animal ⬇️"> -- Select a Animal -- </option>
-          {animalsTop50.map((animal) => (
-            <option value={animal}>{animal}</option>
-          ))}
-        </select>
-        <ReactTags
-          tags={tags}
-          delimiters={delimiters}
-          handleDelete={handleDelete}
-          handleAddition={handleAddition}
-          handleDrag={handleDrag}
-          handleTagClick={handleTagClick}
-          inputFieldPosition="bottom"
-          autocomplete
-        /> */}
-      {/* Source for uploading images: https://stackoverflow.com/questions/1085801/get-selected-value-in-dropdown-list-using-javascript */}
-      {/* <div>
-          <h1>Upload An Image of Your Doge :)</h1>
-          {image && (
-            <div>
-              <img
-                alt="not found"
-                width={"250px"}
-                src={URL.createObjectURL(image)}
-              />
-              <br />
-              <button onClick={() => setSelectedImage(null)}>Remove</button>
-            </div>
-          )}
-          <br />
-          <br />
-          <input
-            type="file"
-            name="myImage"
-            onChange={(event) => {
-              console.log(event.target.files[0]);
-              setSelectedImage(event.target.files[0]);
-            }}
-          />
-        </div>
-        <br />
-        <br />
-
-        <button type="submit">Create</button>
-      </form> */}
     </React.Fragment>
   );
 };
