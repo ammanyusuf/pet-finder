@@ -84,27 +84,34 @@ export const AddPosts = () => {
       location,
       resolved: false,
     };
-    try {
-      let res = await fetch("http://localhost:4000/api/posts", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-          "x-access-token": auth.token,
-        },
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        console.log("Success");
-        handleClose();
-        window.location.reload(false);
-      } else {
-        console.log("Fail");
-      }
-    } catch (err) {
-      console.log(err);
+    if(data.title == "" || data.description == "" || data.pet == "" || data.dateLost == "" || data.location == "")
+    {
+      console.log("What are you doing!") //add the react components to turn boxes red
     }
-  };
+    else
+    {
+      try {
+        let res = await fetch("http://localhost:4000/api/posts", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+            "x-access-token": auth.token,
+          },
+        });
+        let resJson = await res.json();
+        if (res.status === 200) {
+          console.log("Success");
+          handleClose();
+          window.location.reload(false);
+        } else {
+          console.log("Fail");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }
 
   const checkIfPets = () => {
     if (pets.length > 0) {

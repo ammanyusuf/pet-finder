@@ -86,6 +86,12 @@ const Profile = () => {
         //const data = {name, breed, animal, tags, image}
         console.log(data.get(image));
         
+        // if(data.get(image) == null)
+        // {
+        //   console.log("No")
+        // }
+        //else
+        //{
             try {
             let res = await fetch("http://localhost:4000/api/user/addPicture", {
                 method: "PATCH",
@@ -107,6 +113,7 @@ const Profile = () => {
                 console.log(err);
             }
         };
+      //}
     
 
     const handlePasswordChange = async (e) => {
@@ -116,29 +123,36 @@ const Profile = () => {
           const data = {
               password
           };
-          try {
-          let res = await fetch("http://localhost:4000/api/user", {
-              method: "PATCH",
-              body: JSON.stringify(data),
-              headers: {
-              "Content-Type": "application/json",
-              "x-access-token": auth.token,
-              },
-          });
-          let resJson = await res.json();
-          if (res.status === 200) {
-              console.log("Success");
-              handleClose();
-              window.location.reload(true);
-          } else {
-              console.log("Fail");
+          if(data.password == "")
+          {
+            console.log("nah fam") //add css alert here, maybe red box?
           }
-          } catch (err) {
-              console.log(err);
-          }
-      }
-      
-  };
+          else
+          {
+            try {
+            let res = await fetch("http://localhost:4000/api/user", {
+                method: "PATCH",
+                body: JSON.stringify(data),
+                headers: {
+                "Content-Type": "application/json",
+                "x-access-token": auth.token,
+                },
+            });
+            let resJson = await res.json();
+            if (res.status === 200) {
+                console.log("Success");
+                handleClose();
+                window.location.reload(true);
+            } else {
+                console.log("Fail");
+            }
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        
+    };
+  }
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -148,25 +162,32 @@ const Profile = () => {
           email,
           dateOfBirth
         };
-        try {
-          let res = await fetch("http://localhost:4000/api/user/", {
-            method: "PATCH",
-            body: JSON.stringify(data),
-            headers: {
-              "Content-Type": "application/json",
-              "x-access-token": auth.token,
-            },
-          });
-          let resJson = await res.json();
-          if (res.status === 200) {
-            console.log("Success");
-          } else {
-            console.log("Fail");
-          }
-        } catch (err) {
-          console.log(err);
+        if(data.name == "" || data.username == "" || data.email == "" || data.dateOfBirth == "")
+        {
+          console.log("info not updated") //add alert or red box on text fields
         }
-      };
+        else
+        {
+          try {
+            let res = await fetch("http://localhost:4000/api/user/", {
+              method: "PATCH",
+              body: JSON.stringify(data),
+              headers: {
+                "Content-Type": "application/json",
+                "x-access-token": auth.token,
+              },
+            });
+            let resJson = await res.json();
+            if (res.status === 200) {
+              console.log("Success");
+            } else {
+              console.log("Fail");
+            }
+          } catch (err) {
+            console.log(err);
+          }
+        };
+      }
 
 
 

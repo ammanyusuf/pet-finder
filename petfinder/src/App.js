@@ -90,7 +90,7 @@ function App() {
       }}
     >
       <Router>
-        <Navbar2 />
+        {/* <Navbar2 /> */}
         <Navbar />
         <Routes>{routes}</Routes>
       </Router>

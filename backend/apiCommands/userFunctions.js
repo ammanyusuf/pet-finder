@@ -53,43 +53,58 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   //use username and password to login
   const { username, password } = req.body;
+  
 
   db.User.findOne({ username: username }, function (err, person) {
     if (err) {
       res.send("Invalid login, get your info correct next time");
     } else {
-      console.log(person.password, password);
-      bcrypt.compare(password, person.password).then((isCorrect) => {
-        console.log(isCorrect);
-        if (isCorrect) {
-          const user = {
-            id: person._id,
-            username: person.username,
-          };
-          jwt.sign(
-            user,
-            process.env.JWT_SECRET,
-            { expiresIn: 86400 },
-            (err, token) => {
-              if (err) {
-                console.log("oops!", err);
-                console.log(JSON.stringify(user));
-                return res.json({ message: err });
-              }
-              return res.json({
-                message: "Login Successfully",
-                token: "Bearer " + token,
-                username: person.username,
-                userId: person._id,
-              });
-            }
-          );
-        } else {
-          res.send(
-            "Invalid password or username! You have no businesss being here. Pet smuggler"
-          );
+        if(person == null)
+        {
+          res.json({
+            message: "Incorrect Username",
+            login: false
+          });
         }
-      });
+        else
+        {
+
+          console.log(person.password, password);
+          bcrypt.compare(password, person.password).then((isCorrect) => {
+            console.log(isCorrect);
+            if (isCorrect) {
+              const user = {
+                id: person._id,
+                username: person.username,
+              };
+              jwt.sign(
+                user,
+                process.env.JWT_SECRET,
+                { expiresIn: 86400 },
+                (err, token) => {
+                  if (err) {
+                    console.log("oops!", err);
+                    console.log(JSON.stringify(user));
+                    return res.json({ message: err });
+                  }
+                  return res.json({
+                    message: "Login Successfully",
+                    token: "Bearer " + token,
+                    username: person.username,
+                    userId: person._id,
+                    login: true
+                  });
+                }
+              );
+            } else {
+              // res.send(
+              //   "Invalid password or username! You have no businesss being here. Pet smuggler"
+              // );
+              return res.json({message : "Login Unsuccessful",
+                                login: false})
+            }
+        });
+      }
     }
   });
 };
@@ -219,6 +234,10 @@ const updateUser = async (req, res) => {
 const addProfilePic = async (req, res) => {
 
   console.log(req.file);
+  if(req.file == null)
+  {
+    return res.status(400);
+  }
   // console.log(req);
   cloudinary.v2.uploader.upload(req.file.path, async function (err, result){
     if (err) {
@@ -276,7 +295,8 @@ const addPetPic = async (req, res) => {
   const { id } = req.params;
 
   const pet = await db.Pet.findOne({ _id: id });
-
+  
+  
   for (const file of files) {
     console.log("hi there");
     await cloudinary.v2.uploader.upload(file.path, function (err, result) {

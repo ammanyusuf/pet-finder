@@ -36,27 +36,34 @@ export const AddProfilePicture = () => {
     data.append("image", images);
     //const data = {name, breed, animal, tags, image}
     console.log(data.get(images));
-    try {
-      let res = await fetch("http://localhost:4000/api/user/addProfilePicture", {
-        method: "PATCH",
-        body: data,
-        headers: {
-          // 'Content-Type': 'appli/form-data',
-          "x-access-token": auth.token,
-        },
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        handleClose();
-        window.location.reload(true);
-        console.log("Success");
-      } else {
-        console.log("Fail");
+    // if(data.get(images) == null)
+    // {
+    //   console;e.log("No")
+    // }
+    // else
+    // {
+      try {
+        let res = await fetch("http://localhost:4000/api/user/addProfilePicture", {
+          method: "PATCH",
+          body: data,
+          headers: {
+            // 'Content-Type': 'appli/form-data',
+            "x-access-token": auth.token,
+          },
+        });
+        let resJson = await res.json();
+        if (res.status === 200) {
+          handleClose();
+          window.location.reload(true);
+          console.log("Success");
+        } else {
+          console.log("Fail");
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-  };
+    };
+  
 
   return (
     <React.Fragment>

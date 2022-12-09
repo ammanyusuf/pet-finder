@@ -44,6 +44,7 @@ function Register() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    
     const data = {
         name,
         username,
@@ -51,28 +52,39 @@ function Register() {
         email,
         dateOfBirth
     };
-    try {
-      let res = await fetch("http://localhost:4000/api/user/register", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-        //   "x-access-token": auth.token,
-        },
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        console.log("Successful Register");
-        window.location.href = '/Login';
-        //handleClose();
-        //window.location.reload(true);
-      } else {
-        console.log("Fail");
-      }
-    } catch (err) {
-      console.log(err);
+    if(data.name == "" || data.username == "" || data.password == "" || confirmPassword == "" || data.email == "" || data.dateOfBirth == "")
+    {
+      console.log("gotta enter info") //add css here
     }
-  };
+    else if(confirmPassword != password)
+    {
+      console.log("Password's need to match") //add css
+    }
+    else
+    {
+      try {
+        let res = await fetch("http://localhost:4000/api/user/register", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          //   "x-access-token": auth.token,
+          },
+        });
+        let resJson = await res.json();
+        if (res.status === 200) {
+          console.log("Successful Register");
+          window.location.href = '/Login';
+          //handleClose();
+          //window.location.reload(true);
+        } else {
+          console.log("Fail");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }
 
 //     axios
 //       .post("http://localhost:4000/api/user/register", loginInfo)

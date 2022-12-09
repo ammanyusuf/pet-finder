@@ -44,13 +44,21 @@ function LoginPage() {
       .post("http://localhost:4000/api/user/login", loginInfo)
       .then((response) => {
         //get token from response
-        const token = response.data.token;
-        const username = response.data.username;
-        const id = response.data.userId;
-        auth.login(token, username, id);
+        if(response.data.login)
+        {
+          const token = response.data.token;
+          const username = response.data.username;
+          const id = response.data.userId;
+          auth.login(token, username, id);
 
-        //redirect user to home page
-        window.location.href = '/Home';
+          //redirect user to home page
+          window.location.href = '/Home';
+        }
+        else
+        {
+          console.log(response.data.message)
+          const loginIncorrect = <div> YOU must login correctly! </div> //add something like this in
+        }
       })
       .catch((err) => console.log(err));
   }

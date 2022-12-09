@@ -65,26 +65,35 @@ export const AddPet = () => {
     for (let i = 0; i < images.length; i++) {
       data.append("image", images[i]);
     }
-    try {
-      let res = await fetch("http://localhost:4000/api/user/addPet", {
-        method: "POST",
-        body: data,
-        headers: {
-          "x-access-token": auth.token,
-        },
-      });
-      let resJson = await res.json();
-      if (res.status === 200) {
-        handleClose();
-        window.location.reload(false);
-        console.log("Success");
-      } else {
-        console.log("Fail");
-      }
-    } catch (err) {
-      console.log(err);
+
+    if(name == "" || breed == "" || animal == "")
+    {
+      console.log("What are you doing!") //add the react components to turn boxes red
     }
-  };
+    else
+    {
+
+      try {
+        let res = await fetch("http://localhost:4000/api/user/addPet", {
+          method: "POST",
+          body: data,
+          headers: {
+            "x-access-token": auth.token,
+          },
+        });
+        let resJson = await res.json();
+        if (res.status === 200) {
+          handleClose();
+          window.location.reload(false);
+          console.log("Success");
+        } else {
+          console.log("Fail");
+        }
+      } catch (err) {
+        console.log(err);
+      }
+    };
+  }
 
   const handleDelete = (i) => {
     setTags(tags.filter((tag, index) => index !== i));
