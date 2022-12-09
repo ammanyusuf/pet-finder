@@ -28,10 +28,18 @@ export const PetCard = (props) => {
     }
   };
   return (
-    <Card variant="outlined" style={{ border: "1px solid black" }}>
+    <Card variant="outlined" className = "postCard">
       <CardHeader
-        title={props.name}
+        // title={props.name}
+        title ={<Typography variant="body2" color="text.primary" className="petName">
+            {props.name}
+          </Typography>}
         subheader={`Animal: ${props.animal} Breed: ${props.breed}`}
+//         subheader={<Typography variant="body2" color="text.primary">
+//         Animal: {props.animal}
+//         Breed: {props.breed}
+//       </Typography> 
+// }
       />
       <CardMedia
         component="img"

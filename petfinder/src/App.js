@@ -19,6 +19,7 @@ import UserPostFeed from "./UserPostFeed";
 import ViewPost from "./ViewPost";
 import { AuthContext } from "./context/auth-context";
 import Navbar from "./Navbar";
+import Navbar2 from "./NavBar2";
 
 function App() {
   const [token, setToken] = useState(false);
@@ -89,6 +90,7 @@ function App() {
       }}
     >
       <Router>
+        <Navbar2 />
         <Navbar />
         <Routes>{routes}</Routes>
       </Router>

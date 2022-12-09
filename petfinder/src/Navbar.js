@@ -5,13 +5,14 @@ import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { AuthContext } from "./context/auth-context";
 import { Link } from "react-router-dom";
+import "./App.css";
 
 export default function ButtonAppBar() {
   const auth = useContext(AuthContext);
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1 }} >
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar style={{ marginLeft: 500 }} className='parent'>
           <Link to="/Home" style={{ color: "white", textDecoration: "none" }}>
             Feed
           </Link>
@@ -39,8 +40,9 @@ export default function ButtonAppBar() {
               My Profile
             </Link>
           )}
+          {auth.isLoggedIn && <h2 className="right">{auth.name}</h2>}
           {auth.isLoggedIn && (
-            <Button
+            <Button className="right1"
               onClick={auth.logout}
               variant="contained"
               color="secondary"
@@ -57,7 +59,7 @@ export default function ButtonAppBar() {
               Login
             </Link>
           )}
-          {auth.isLoggedIn && <h2>{auth.name}</h2>}
+          
         </Toolbar>
       </AppBar>
     </Box>
