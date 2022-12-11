@@ -2,16 +2,16 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button, Paper, TextField } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import Typography from "@mui/material/Typography";
-import { PostCard } from "./PostCard";
+import { PostCard } from "../Posts/PostCard";
 import { PetCard } from "./PetCard";
 import { Link } from "react-router-dom";
 import AddPet from "./AddPet";
 
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 export const PetFeed = () => {
   const auth = useContext(AuthContext);
-  const [pets, setPets] = useState([]);
+  const [pets, setPets] = useState();
 
   useEffect(() => {
     async function fetchPets() {
@@ -37,24 +37,17 @@ export const PetFeed = () => {
 
   return (
     <React.Fragment>
-      {/* <Link to="/AddPet">
-        <Button
-          onClick={handleSubmit}
-          color="primary"
-          sx={{ p: "10px" }}
-          aria-label="control-point"
-        >
-          <Typography variant="body2" color="text.primary">
-            Add Pet
-          </Typography>
-        </Button>
-      </Link> */}
-      <AddPet />
-      {pets.map((pet) => (
-        <div key={pet._id}>
-          <PetCard {...pet} />
-        </div>
-      ))}
+      {!pets &&  <div class="loader"></div>}
+      {pets &&
+      <React.Fragment>
+        <AddPet />
+        {pets.map((pet) => (
+          <div key={pet._id}>
+            <PetCard {...pet} />
+          </div>
+        ))}
+      </React.Fragment>
+      }
     </React.Fragment>
   );
 };

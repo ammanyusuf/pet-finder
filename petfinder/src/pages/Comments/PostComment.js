@@ -6,7 +6,7 @@ import IconButton from "@mui/material/IconButton";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 export default function PostComment({ post_id }) {
   const auth = useContext(AuthContext);
@@ -66,6 +66,7 @@ export default function PostComment({ post_id }) {
   };
 
   return (
+
     <React.Fragment>
       {error && (
         <Alert severity="error">
@@ -83,10 +84,12 @@ export default function PostComment({ post_id }) {
         <Paper
           component="form"
           sx={{
-            p: "2px 4px",
+            marginBottom: "2vh",
+            marginLeft: "2vh",
             display: "flex",
             alignItems: "center",
-            width: 400,
+            borderRadius: "10px",
+            maxWidth: "95%",
           }}
         >
           <InputBase

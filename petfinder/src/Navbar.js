@@ -6,47 +6,46 @@ import Button from "@mui/material/Button";
 import { AuthContext } from "./context/auth-context";
 import { Link } from "react-router-dom";
 import "./App.css";
+import "./navbar.css";
+import classnames from 'classnames';
+import { Avatar } from "@mui/material";
 
 export default function ButtonAppBar() {
   const auth = useContext(AuthContext);
   return (
-    <Box sx={{ flexGrow: 1 }} >
-      <AppBar position="static">
-        <Toolbar style={{ marginLeft: 500 }} className='parent'>
-          <Link to="/Home" style={{ color: "white", textDecoration: "none" }}>
+    <Box >
+      <AppBar position="static" >
+        <Toolbar className={'sidebar'}>
+          <Link to="/Home" >
             Feed
           </Link>
           {auth.isLoggedIn && (
             <Link
               to="/PostFeed"
-              style={{ color: "white", textDecoration: "none" }}
             >
-              My Posts
+              MyPosts
             </Link>
           )}
           {auth.isLoggedIn && (
             <Link
               to="/PetFeed"
-              style={{ color: "white", textDecoration: "none" }}
             >
-              My Pets
+              MyPets
             </Link>
           )}
           {auth.isLoggedIn && (
             <Link
               to="/Profile"
-              style={{ color: "white", textDecoration: "none" }}
+              id={'sidebar-name'}
             >
-              My Profile
+              {auth.name}
             </Link>
           )}
-          {auth.isLoggedIn && <h2 className="right">{auth.name}</h2>}
           {auth.isLoggedIn && (
-            <Button className="right1"
+            <Button className={'sidebar-button'} id={"sidebar-button"}
               onClick={auth.logout}
               variant="contained"
               color="secondary"
-              style={{ color: "white" }}
             >
               Logout
             </Button>
@@ -59,7 +58,6 @@ export default function ButtonAppBar() {
               Login
             </Link>
           )}
-          
         </Toolbar>
       </AppBar>
     </Box>

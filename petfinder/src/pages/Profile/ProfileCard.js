@@ -10,8 +10,8 @@ import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { ViewComment } from "./ViewComment";
-import PostComment from "./PostComment";
+import { ViewComment } from "../Comments/ViewComment";
+import PostComment from "../Comments/PostComment";
 
 export const ProfileCard = (props) => {
 //   const [index, setIndex] = useState(0);

@@ -50,9 +50,6 @@ function LoginPage() {
           const username = response.data.username;
           const id = response.data.userId;
           auth.login(token, username, id);
-
-          //redirect user to home page
-          window.location.href = '/Home';
         }
         else
         {

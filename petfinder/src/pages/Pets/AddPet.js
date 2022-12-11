@@ -11,7 +11,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 
 import { WithContext as ReactTags } from "react-tag-input";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 let animalsTop50 = [
   "Dog",
@@ -125,9 +125,17 @@ export const AddPet = () => {
 
   return (
     <React.Fragment>
-      <Button variant="outlined" onClick={handleClickOpen}>
-        Add a pet
-      </Button>
+      <div id="create-post-button-container">
+        <Button variant="outlined" onClick={handleClickOpen}
+        sx={{
+          color: "green",
+          fontWeight: "bold",
+          backgroundColor: "lightgreen",
+        }}
+        >
+          Add a pet
+        </Button>
+      </div>
       <Dialog open={open} encType="multipart/form-data" onClose={handleClose}>
         <DialogTitle>Add a pet</DialogTitle>
         <DialogContent>

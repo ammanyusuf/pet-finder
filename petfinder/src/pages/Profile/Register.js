@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import axios from "axios";
 // import { setAuthToken } from "../context/setAuthToken";
 // import { AuthContext } from "../context/auth-context";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";

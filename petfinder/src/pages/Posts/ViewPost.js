@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { PostCard } from "./PostCard";
 import { SinglePostCard } from "./SinglePostCard";
+import "../../App.css";
+
 
 const ViewPost = () => {
   const [id, setId] = useState("");
   const [post, setPost] = useState();
-
   function parsePostLink(href) {
     let x = href.indexOf("?");
     let query = x >= 0 ? href.substring(x + 4) : null;
@@ -41,7 +42,7 @@ const ViewPost = () => {
 
   return (
     <React.Fragment>
-      {!post && <h1>Loading...</h1>}
+      {!post &&  <div class="loader"></div>}
       {post && <SinglePostCard {...post} />}
     </React.Fragment>
   );

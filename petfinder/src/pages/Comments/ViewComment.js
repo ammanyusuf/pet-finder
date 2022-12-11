@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 import moment from "moment";
 
@@ -106,7 +106,14 @@ export const ViewComment = (props) => {
     <React.Fragment>
       {showComment && (
         <List
-          sx={{ width: "100%", maxWidth: 360, bgcolor: "background.paper" }}
+          sx={{ 
+            width: "100%", 
+            maxWidth: "95%",
+            bgcolor: "background.paper",
+            marginBottom: "2vh",
+            marginLeft: "2vh",
+            borderRadius: "10px",
+          }}
         >
           <ListItem
             alignItems="flex-start"

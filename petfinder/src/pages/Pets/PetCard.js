@@ -34,7 +34,6 @@ export const PetCard = (props) => {
         title ={<Typography variant="body2" color="text.primary" className="petName">
             {props.name}
           </Typography>}
-        subheader={`Animal: ${props.animal} Breed: ${props.breed}`}
 //         subheader={<Typography variant="body2" color="text.primary">
 //         Animal: {props.animal}
 //         Breed: {props.breed}
@@ -48,14 +47,10 @@ export const PetCard = (props) => {
         alt="Missing"
         sx={{ objectFit: "contain" }}
       />
-      <CardContent>
-        <Typography variant="body2" color="text.primary">
-          {props.tags.map((tag) => (
-            <span key={tag}>{tag} </span>
-          ))}
-        </Typography>
-      </CardContent>
-      <CardActions>
+
+      <CardActions sx={{
+          justifyContent:"center"
+        }}>
         <IconButton edge="start" aria-label="delete" onClick={adjustIndexLeft}>
           <NavigateBeforeIcon />
         </IconButton>
@@ -63,6 +58,19 @@ export const PetCard = (props) => {
           <NavigateNextIcon />
         </IconButton>
       </CardActions>
+      <CardContent>
+        <Typography className="petDescription">
+          {`Animal: ${props.animal}`}
+        </Typography>
+        <Typography className="petDescription">
+          {`Breed: ${props.breed}`}
+        </Typography>
+        <Typography variant="body2" color="text.primary" className="petDescription">
+          {props.tags.map((tag) => (
+            <span key={tag}>{tag} </span>
+          ))}
+        </Typography>
+      </CardContent>
     </Card>
   );
 };

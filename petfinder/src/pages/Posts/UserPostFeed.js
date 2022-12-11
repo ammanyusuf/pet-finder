@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 
 import { PostCard } from "./PostCard";
 import AddPosts from "./AddPosts";
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
 
 const UserPostFeed = () => {
   const auth = useContext(AuthContext);
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState();
 
   useEffect(() => {
     async function fetchPosts() {
@@ -35,12 +35,17 @@ const UserPostFeed = () => {
 
   return (
     <React.Fragment>
-      <AddPosts />
-      {posts.map((post) => (
-        <div key={post._id}>
-          <PostCard {...post} />
-        </div>
-      ))}
+      {!posts &&  <div class="loader"></div>}
+      {posts &&
+      <React.Fragment>
+        <AddPosts />
+        {posts.map((post) => (
+          <div key={post._id}>
+            <PostCard {...post} />
+          </div>
+        ))}
+      </React.Fragment>
+      }
     </React.Fragment>
   );
 };

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
+import { PostCard } from "./pages/Posts/PostCard";
+import "./App.css";
 
-import { PostCard } from "./PostCard";
-import moment from "moment";
 
 const Feed = () => {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState();
 
   useEffect(() => {
     async function fetchPosts() {
@@ -30,7 +30,8 @@ const Feed = () => {
 
   return (
     <React.Fragment>
-      {posts.map((post) => (
+     {!posts &&  <div class="loader"></div>}
+      {posts && posts.map((post) => (
         <div key={post._id}>
           <PostCard {...post} />
         </div>

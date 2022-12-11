@@ -15,7 +15,9 @@ import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import moment from "moment";
 
-import { AuthContext } from "./context/auth-context";
+import { AuthContext } from "../../context/auth-context";
+
+import "../../App.css";
 
 export const AddPosts = () => {
   const auth = useContext(AuthContext);
@@ -179,10 +181,20 @@ export const AddPosts = () => {
   return (
     <React.Fragment>
       <LocalizationProvider dateAdapter={AdapterMoment}>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Create a new post
-        </Button>
-        {checkIfPets()}
+        <div id="create-post-button-container">
+          <Button 
+          variant="outlined" 
+          onClick={handleClickOpen} 
+          sx={{
+            color: "green",
+            fontWeight: "bold",
+            backgroundColor: "lightgreen",
+          }}
+          >
+            Create a new post
+          </Button>
+          {checkIfPets()}
+        </div>
       </LocalizationProvider>
     </React.Fragment>
   );
