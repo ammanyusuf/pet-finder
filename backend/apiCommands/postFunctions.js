@@ -105,17 +105,20 @@ const searchPost = async (req, res) => {
   //populated fields will be used to search and filter db results
   const { resolved, animal, breed, date, tag, location } = req.body;
 
-  console.log(JSON.stringify(req.body));
+  // console.log(JSON.stringify(req.body));
 
   var searchQuery = {
-    resolved: resolved,
-    Location: location,
+    resolved: req.body.resolved,
+    Location: req.body.Location,
+    animal: req.body.animal
   };
 
   let filter = req.body;
-  console.log(searchQuery);
+  console.log(JSON.stringify(req.body));
+  console.log(searchQuery)
 
-  const post2 = await Posts.Post.find(searchQuery); //.populate({path : 'pet',
+  const post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$eq: animal}}})
+                                                  .then((orders) => orders.filter((order) => order.pet != null))
   // match : {animal : { $eq : animal}}})
   //.then((orders)=>orders.filter((order=>order.pet !=null)));
   // const { id } = req.params
