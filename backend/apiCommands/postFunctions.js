@@ -77,10 +77,10 @@ const makePost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   //post id will be appended to params when clicked (button press)
-  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
-    if(count>0){
   const { id } = req.params;
 
+  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
+    if(count>0){
   const postCheck = await Posts.Post.findOne({ _id: id });
 
   if (postCheck.author != req.user.id) {
@@ -199,9 +199,10 @@ const deletePost = async (req, res) => {
 const updateComment = async (req, res) => {
   //in frontend the id of the post and comment will be appended to the url.
   //Do this when user clicks a update button and this api function is called
+
+  const { id, cid } = req.params;
   Posts.Comment.countDocuments({_id: cid}, async function (err, count){ 
   if(count>0){
-  const { id, cid } = req.params;
 
   const { upvote } = req.body;
 

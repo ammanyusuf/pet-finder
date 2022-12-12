@@ -35,7 +35,7 @@ const UserPostFeed = () => {
 
   return (
     <React.Fragment>
-      {!posts &&  <div class="loader"></div>}
+      {!posts &&  <div className="loader"></div>}
       {posts &&
       <React.Fragment>
         <AddPosts />

@@ -24,6 +24,9 @@ function LoginPage() {
 
   // let [user, setUser] = useState(()=> localStorage.getItem('authTokens') ? jwt_decode(localStorage.getItem('authTokens')) : null)
 
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+
   async function handleSubmit(e) {
     e.preventDefault();
     // const form = e.target;
@@ -53,13 +56,25 @@ function LoginPage() {
         }
         else
         {
+
+          setError(true);
+          setErrorMsg('Username or password is incorrect');
           console.log(response.data.message)
           const loginIncorrect = <div> YOU must login correctly! </div> //add something like this in
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {console.log(err)});
   }
-  const theme = createTheme();
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#306BAC'
+      },
+      secondary: {
+        main: '#306BAC'
+      },
+    }
+  });
   return (
     <ThemeProvider theme={theme}>
       <Grid container component="main" sx={{ height: "100vh" }}>
@@ -111,6 +126,8 @@ function LoginPage() {
                 name="username"
                 autoComplete="username"
                 autoFocus
+                error={error}
+                helperText={error && errorMsg}
               />
               <TextField
                 margin="normal"
@@ -121,6 +138,8 @@ function LoginPage() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                error={error}
+                helperText={error && errorMsg}
               />
 
               <Button

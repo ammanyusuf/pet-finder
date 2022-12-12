@@ -9,16 +9,24 @@ import DialogContentText from "@mui/material/DialogContentText";
 import Button from "@mui/material/Button";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 
 import { WithContext as ReactTags } from "react-tag-input";
 import { AuthContext } from "../../context/auth-context";
 
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 export const AddProfilePicture = () => {
   const auth = useContext(AuthContext);
   const [photo, setSelectedImages] = useState('');
   const [open, setOpen] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -53,8 +61,9 @@ export const AddProfilePicture = () => {
         });
         let resJson = await res.json();
         if (res.status === 200) {
+          setOpenSnackBar(true);
           handleClose();
-          window.location.reload(true);
+          setTimeout(() => {window.location.reload(false)}, 3000);
           console.log("Success");
         } else {
           console.log("Fail");
@@ -101,6 +110,20 @@ export const AddProfilePicture = () => {
           <Button onClick={handleSubmit}>Add Picture</Button>
         </DialogActions>
       </Dialog>
+      {openSnackBar && (
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+        >
+          <Alert
+            onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+            severity="success"
+          >
+            Updated profile picture! Page will refresh shortly. 
+          </Alert>
+        </Snackbar>
+      )}
     </React.Fragment>
   );
 };

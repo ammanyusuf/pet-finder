@@ -49,10 +49,10 @@ const ViewPost = () => {
 
   return (
     <React.Fragment>
-      {!post &&  <div class="loader"></div>}
+      {!post &&  <div className="loader"></div>}
       {post && 
       <React.Fragment>
-      <IconButton aria-label="delete" size="large" onClick={() => navigate(-1)}>
+      <IconButton className="backButton" sx={{color:"#306BAC", marginLeft: "30%", marginTop:"10px", border: "4px solid #306BAC", borderRadius: 10}} size="large" onClick={() => navigate(-1)}>
         <ArrowBackIcon fontSize="inherit"/>
       </IconButton>
       <SinglePostCard {...post} />

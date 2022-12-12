@@ -21,6 +21,8 @@ import { AuthContext } from "./context/auth-context";
 import Navbar from "./Navbar";
 import Navbar2 from "./NavBar2";
 import { NotFound } from "./NotFound"
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+
 
 let logoutTimer;
 function App() {
@@ -70,6 +72,20 @@ function App() {
 
   let routes;
 
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#306BAC'
+      },
+      secondary: {
+        main: '#141B41'
+      },
+      tertiary: {
+        main: '#C4DAFF'
+      }
+    }
+  });
+
   if (token) {
     routes = (
       <React.Fragment>
@@ -107,10 +123,12 @@ function App() {
         logout: logout,
       }}
     >
-      <Router>
-        <Navbar />
-        <Routes>{routes}</Routes>
-      </Router>
+      <ThemeProvider theme={theme}>
+        <Router>
+          <Navbar />
+          <Routes>{routes}</Routes>
+        </Router>
+      </ThemeProvider>
     </AuthContext.Provider>
   );
 }

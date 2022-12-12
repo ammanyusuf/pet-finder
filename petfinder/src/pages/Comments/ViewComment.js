@@ -11,6 +11,7 @@ import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import ThumbDownIcon from "@mui/icons-material/ThumbDown";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { AuthContext } from "../../context/auth-context";
+import '../../App.css'
 
 import moment from "moment";
 
@@ -120,6 +121,7 @@ export const ViewComment = (props) => {
             secondaryAction={
               <React.Fragment>
                 <Typography
+                  edge="end"
                   sx={{ display: "inline" }}
                   component="span"
                   variant="body2"
@@ -163,6 +165,7 @@ export const ViewComment = (props) => {
               <Avatar alt="Remy Sharp" src={props.author.picture} />
             </ListItemAvatar>
             <ListItemText
+             sx={{ maxWidth: '55%' }}
               primary={
                 props.author.username + " - " + calcTimeFromNow(props.createdAt)
               }

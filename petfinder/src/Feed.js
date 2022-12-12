@@ -6,6 +6,7 @@ import "./App.css";
 import Button from "@mui/material/Button";
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
+import { Grid } from "@mui/material";
 
 const PostCard = lazy(() => import("./pages/Posts/PostCard"));
 const Feed = () => {
@@ -195,53 +196,83 @@ const Feed = () => {
               placeholder="User name"
               onChange={(e) => setAuthorName(e.target.value)}
             /> */}
-      <TextField
-              type="text"
-              value={name}
-              placeholder="Pet Name"
-              onChange={(e) => setName(e.target.value)}
-            />
-            <TextField
-              type="text"
-              value={breed}
-              placeholder="Breed"
-              onChange={(e) => setBreed(e.target.value)}
-            />
-            <Select value={animal} onChange={(e) => setAnimal(e.target.value)}>
-            <MenuItem value="⬇️ Select an Animal ⬇️">
-              -- Select a Animal --{" "}
-            </MenuItem>
-            {animalsTop50.map((animal) => (
-              <MenuItem key={animal} value={animal}>
-                {animal}
-              </MenuItem>
-            ))}
-          </Select>
-
-          <TextField
-              type="tags"
-              value={tags}
-              placeholder="tags"
-              onChange={(e) => setTags(e.target.value)}
-            />
-          <Button onClick={handleFilter}>Filter</Button>
-          <Button onClick={clear}>Clear</Button>
-     {!posts &&  <div class="loader"></div>}
+     {!posts &&  <div className="loader"></div>}
      {posts &&  
       <React.Fragment>
-      <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={sort}
-        label="Age"
-        onChange={(e) => sortBy(e)}
-      >
-        <MenuItem value={'Date Lost'}>Date Lost</MenuItem>
-        <MenuItem value={'Post Created At'}>Post Created</MenuItem>
-      </Select>
+        <div>
+          <Grid className="filterGroup" container>
+            <Grid item xs={12} >
+              <Grid container spacing={2} justifyContent={'center'}>
+                <Grid item xs={3}>
+                  <TextField
+                    fullWidth
+                    type="text"
+                    value={name}
+                    placeholder="Pet Name"
+                    onChange={(e) => setName(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    fullWidth
+                    type="text"
+                    value={breed}
+                    placeholder="Breed"
+                    onChange={(e) => setBreed(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={3}>
+                  <Select 
+                    value={animal} 
+                    onChange={(e) => setAnimal(e.target.value)}
+                    fullWidth
+                  >
+                    <MenuItem value="Select an Animal">
+                      <div style={{opacity: 0.42}}> 
+                        -- Select a Animal --{" "}
+                      </div>
+                    </MenuItem>
+                    {animalsTop50.map((animal) => (
+                      <MenuItem key={animal} value={animal}>
+                        {animal}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </Grid>
+                <Grid item xs={3}>
+                  <TextField
+                    fullWidth
+                    type="tags"
+                    value={tags}
+                    placeholder="Tags"
+                    onChange={(e) => setTags(e.target.value)}
+                  />
+                </Grid>
+                <Grid item xs={3}></Grid>
+                <Grid item xs={3} >
+                  <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={sort}
+                    label="Age"
+                    onChange={(e) => sortBy(e)}
+                  >
+                    <MenuItem value={'Date Lost' }>Date Lost</MenuItem>
+                    <MenuItem value={'Post Created At'}>Post Create</MenuItem>
+                  </Select>
+                </Grid>
+                <Grid item xs={4} container>
+                  <Button onClick={handleFilter}>Filter</Button>
+                  <Button onClick={clear}>Clear</Button>
+                </Grid>
+                <Grid item xs={2}></Grid>
+              </Grid>
+            </Grid>
+          </Grid>
+        </div>
       </React.Fragment>
-           }
+      }
       {posts &&
       posts.map((post) => (
         <div key={post._id}>

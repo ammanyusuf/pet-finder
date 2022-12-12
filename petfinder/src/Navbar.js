@@ -14,7 +14,7 @@ export default function ButtonAppBar() {
   const auth = useContext(AuthContext);
   return (
     <Box >
-      <AppBar position="static" >
+      <AppBar position="static" sx={{backgroundColor: "#306BAC"}}>
         <Toolbar className={'sidebar'}>
           <Link to="/Home" >
             Feed
@@ -53,7 +53,6 @@ export default function ButtonAppBar() {
           {!auth.isLoggedIn && (
             <Link
               to="/login"
-              style={{ color: "white", textDecoration: "none" }}
             >
               Login
             </Link>

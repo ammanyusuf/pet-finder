@@ -23,7 +23,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 
 const PostCard = (props) => {
   const auth = useContext(AuthContext);
-  const [resolved, setResolved] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
   const calcTimeFromNow = (time) => {
@@ -56,8 +55,8 @@ const PostCard = (props) => {
       });
       let resJson = await res.json();
       if (res.status === 200) {
-        setResolved(true);
         setOpenSnackBar(true);
+        setTimeout(() => {window.location.reload(false)}, 3000);
         console.log("Success");
       } else {
         console.log("Fail");
@@ -69,12 +68,10 @@ const PostCard = (props) => {
 
   return (
     <React.Fragment>
-    {!resolved &&
     <Card
       variant="outlined"
       className="postCard"
     >
-      
       <CardActionArea href={`\ViewPost?id=${props._id}`}>
         <CardHeader
           avatar={<Avatar className ="profilePic" src={props.author.picture}></Avatar>}
@@ -142,7 +139,6 @@ const PostCard = (props) => {
         </CardContent>
       </CardActionArea>
     </Card>
-    }
     {openSnackBar && (
         <Snackbar
           open={openSnackBar}
@@ -153,7 +149,7 @@ const PostCard = (props) => {
             onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
             severity="success"
           >
-            Resolved Post
+            Resolved Post! Will reload page shortly.
           </Alert>
         </Snackbar>
       )}

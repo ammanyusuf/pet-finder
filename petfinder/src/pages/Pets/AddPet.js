@@ -11,7 +11,7 @@ import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert"
-import { Grid } from "@mui/material";
+import { FormHelperText, Grid } from "@mui/material";
 import { WithContext as ReactTags } from "react-tag-input";
 import { AuthContext } from "../../context/auth-context";
 
@@ -45,8 +45,60 @@ export const AddPet = () => {
   const [open, setOpen] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
 
+
+  const [invalidName, setInvalidName] = useState(false);
+  const [invalidBreed, setInvalidBreed] = useState(false);
+  const [invalidAnimal, setInvalidAnimal] = useState(false);
+  const [invalidImages, setInvalidImages] = useState(false);
+
+  const validate = data => {
+    /*
+    name
+    breed
+    animal
+    images
+    */
+    let validated = true;
+    if (data.get("name").length >= 20 || data.get("name").length === 0) {
+      setInvalidName(true);
+      validated = false;
+      console.log('invalid name of pet');
+    } else {
+      setInvalidName(false);
+    }
+
+    if (data.get("breed").length >= 20 || data.get("breed").length === 0) {
+      setInvalidBreed(true);
+      validated = false;
+      console.log('invalid breed name');
+    } else {
+      setInvalidBreed(false);
+    }
+
+    if (data.get("animal") === "" || data.get("animal") === "Select a Animal") {
+      setInvalidAnimal(true);
+      validated = false;
+      console.log('invalid animal');
+    } else {
+      setInvalidAnimal(false);
+    }
+
+    if (data.get("image") === null) {
+      setInvalidImages(true);
+      validated = false;
+      console.log('invalid image');
+    } else {
+      setInvalidImages(false);
+    }
+
+    return validated;
+  }
+
+
   const handleClickOpen = () => {
     setOpen(true);
+
+    setAnimal("Select a Animal");
   };
 
   const handleClose = () => {
@@ -56,6 +108,11 @@ export const AddPet = () => {
     setAnimal("");
     setTags([]);
     setSelectedImages([]);
+
+    setInvalidAnimal(false);
+    setInvalidBreed(false);
+    setInvalidImages(false);
+    setInvalidName(false);
   };
 
   const handleSubmit = async (e) => {
@@ -74,14 +131,13 @@ export const AddPet = () => {
     for (let i = 0; i < images.length; i++) {
       data.append("image", images[i]);
     }
-
-    if(name == "" || breed == "" || animal == "")
+    console.log(data.get("image"))
+    if(!validate(data))
     {
       console.log("What are you doing!") //add the react components to turn boxes red
     }
     else
     {
-
       try {
         let res = await fetch("http://localhost:4000/api/user/addPet", {
           method: "POST",
@@ -154,100 +210,118 @@ export const AddPet = () => {
           '& .MuiDialog-paper': { width: '80%', maxHeight: 435 },
         }}
       >
-        <DialogTitle>Add a pet</DialogTitle>
+        <DialogTitle>Add a Pet!</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} alignItems="center" justifyContent={"center"}>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                type="text"
-                value={name}
-                placeholder="name"
-                onChange={(e) => setName(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                fullWidth
-                type="text"
-                value={breed}
-                placeholder="breed"
-                onChange={(e) => setBreed(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <Select 
-                fullWidth
-                value={animal} 
-                onChange={(e) => setAnimal(e.target.value)}
-              >
-                <MenuItem value="⬇️ Select a Animal ⬇️">
-                  -- Select a Animal --{" "}
-                </MenuItem>
-                {animalsTop50.map((animal) => (
-                  <MenuItem key={animal} value={animal}>
-                    {animal}
-                  </MenuItem>
-                ))}
-              </Select>
-            </Grid>
-            <Grid item xs={6}>
-              <ReactTags
-                tags={tags}
-                delimiters={delimiters}
-                handleDelete={handleDelete}
-                handleAddition={handleAddition}
-                handleDrag={handleDrag}
-                handleTagClick={handleTagClick}
-                inputFieldPosition="bottom"
-                autocomplete
-                style={{
-                  color: "red",
-                }}
-                classNames={{
-                  tags: 'ReactTags__tags',
-                  tagInput: 'ReactTags__tagInput',
-                  tagInputField: 'ReactTags__tagInputField',
-                  selected: 'ReactTags__selected',
-                  tag: 'tagClass',
-                  remove: 'ReactTags__remove',
-                  suggestions: 'ReactTags__suggestions',
-                  activeSuggestion: 'ReactTags__activeSuggestion',
-                  editTagInput: 'ReactTags__editInput',
-                  editTagInputField: 'ReactTags__editTagInput',
-                  clearAll: 'ReactTags__clearAll',
-                }}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <div style={{
-                display: "flex",
-                alignItems: "center",
-                flexDirection: "column",
-              }}>
-                {images.map((image, index) => (
-                <div key={index}>
-                    <img
-                      alt="not found"
-                      width={"250px"}
-                      src={URL.createObjectURL(image)}
-                    />
-                    <br />
-                  </div>
-                ))}
-                <input
-                  style={{
-                    width: "32%",
-                  }}
-                  type="file"
-                  name="imagefileinput"
-                  accept="image/*"
-                  onChange={(event) => {
-                    setSelectedImages((images) => [...images, event.target.files[0]]);
-                  }}
+          <Grid container spacing={2} alignItems="start" justifyContent={"center"}>
+            <Grid item xs={6} container spacing={2} direction="column">
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  error={invalidName}
+                  helperText={invalidName && "Name required (Max Char 20)"}
+                  type="text"
+                  value={name}
+                  placeholder="Name"
+                  onChange={(e) => setName(e.target.value)}
                 />
-                <DialogContentText>Add images of your pet!</DialogContentText>
-              </div>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  error={invalidBreed}
+                  helperText={invalidBreed && "Breed required (Max Char 20)"}
+                  type="text"
+                  value={breed}
+                  placeholder="Breed"
+                  onChange={(e) => setBreed(e.target.value)}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Select 
+                  fullWidth
+                  error={invalidAnimal}
+                  value={animal} 
+                  onChange={(e) => setAnimal(e.target.value)}
+                >
+                  <MenuItem value="Select a Animal">
+                    <div style={{opacity: 0.42}}> 
+                      -- Select a Animal --{" "}
+                    </div>
+                  </MenuItem>
+                  {animalsTop50.map((animal) => (
+                    <MenuItem key={animal} value={animal}>
+                      {animal}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {invalidAnimal && <FormHelperText error>Please select an animal</FormHelperText>}
+              </Grid>
+            </Grid>
+            <Grid item xs={6} container spacing={2} direction="column">
+              <Grid item xs={12}>
+                <div style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}>
+                  {images.map((image, index) => (
+                  <div key={index}>
+                      <img
+                        alt="not found"
+                        width={"250px"}
+                        src={URL.createObjectURL(image)}
+                      />
+                      <br />
+                    </div>
+                  ))}
+                  <input
+                    style={{
+                      width: "32%",
+                    }}
+                    type="file"
+                    name="imagefileinput"
+                    accept="image/*"
+                    onChange={(event) => {
+                      setSelectedImages((images) => [...images, event.target.files[0]]);
+                    }}
+                  />
+                  {invalidImages && <FormHelperText error>Please add atleast one image</FormHelperText>}
+                  <DialogContentText>Add images of your pet!</DialogContentText>
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <div style={{
+                  display: "flex",
+                  justifyContent: "center"
+                }}>
+                  <ReactTags
+                    tags={tags}
+                    delimiters={delimiters}
+                    handleDelete={handleDelete}
+                    handleAddition={handleAddition}
+                    handleDrag={handleDrag}
+                    handleTagClick={handleTagClick}
+                    inputFieldPosition="bottom"
+                    autocomplete
+                    style={{
+                      color: "red",
+                    }}
+                    classNames={{
+                      tags: 'ReactTags__tags',
+                      tagInput: 'ReactTags__tagInput',
+                      tagInputField: 'ReactTags__tagInputField',
+                      selected: 'ReactTags__selected',
+                      tag: 'tagClass',
+                      remove: 'ReactTags__remove',
+                      suggestions: 'ReactTags__suggestions',
+                      activeSuggestion: 'ReactTags__activeSuggestion',
+                      editTagInput: 'ReactTags__editInput',
+                      editTagInputField: 'ReactTags__editTagInput',
+                      clearAll: 'ReactTags__clearAll',
+                    }}
+                  />
+                </div>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>

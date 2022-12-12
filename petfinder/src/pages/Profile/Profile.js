@@ -32,10 +32,16 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment from "moment";
 import "../../App.css";
 
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 const Profile = () => {
@@ -50,6 +56,8 @@ const Profile = () => {
     const [dateOfBirth, setDateOfBirth] = useState('');
     const [open, setOpen] = React.useState(false);
     const [openPic, setOpenPic] = React.useState(false);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
+
     const auth = useContext(AuthContext);
 
 
@@ -66,6 +74,8 @@ const Profile = () => {
         setConfirmPassword("")
         setOldPassword("")
         setOpen(false);
+        setInvalidPassword(false);
+        setInvalidPasswordMsg("");
       };
 
       const handleClosePic = () => {
@@ -104,9 +114,10 @@ const Profile = () => {
             let resJson = await res.json();
             if (res.status === 200) {
                 console.log("Success");
+                setOpenSnackBar(true);
                 handleClose();
-                window.location.reload(true);
-            } else {
+                setTimeout(() => {window.location.reload(false)}, 3000);
+              } else {
                 console.log("Fail");
             }
             } catch (err) {
@@ -116,42 +127,46 @@ const Profile = () => {
       //}
     
 
+    const [invalidPassword, setInvalidPassword] = useState(false);
+    const [invalidPasswordMsg, setInvalidPasswordMsg] = useState("");
+
     const handlePasswordChange = async (e) => {
       e.preventDefault();
-      if(password == confirmPassword)
-      {
+      if (password !== confirmPassword) {
+        setInvalidPassword(true);
+        setInvalidPasswordMsg("Passwords must patch")
+      } else if (password.length === 0) {
+        setInvalidPassword(true);
+        setInvalidPasswordMsg("Password must be greater than 0")
+      } else {
           const data = {
               password
           };
-          if(data.password == "")
-          {
-            console.log("nah fam") //add css alert here, maybe red box?
+          setInvalidPassword(false);
+          setInvalidPasswordMsg("");
+          console.log("what is going on")
+          try {
+          let res = await fetch("http://localhost:4000/api/user", {
+              method: "PATCH",
+              body: JSON.stringify(data),
+              headers: {
+              "Content-Type": "application/json",
+              "x-access-token": auth.token,
+              },
+          });
+          let resJson = await res.json();
+          if (res.status === 200) {
+              console.log("Success");
+              setOpenSnackBar(true);
+              handleClose();
+              setTimeout(() => {window.location.reload(false)}, 3000);
+          } else {
+              console.log("Fail");
           }
-          else
-          {
-            try {
-            let res = await fetch("http://localhost:4000/api/user", {
-                method: "PATCH",
-                body: JSON.stringify(data),
-                headers: {
-                "Content-Type": "application/json",
-                "x-access-token": auth.token,
-                },
-            });
-            let resJson = await res.json();
-            if (res.status === 200) {
-                console.log("Success");
-                handleClose();
-                window.location.reload(false);
-            } else {
-                console.log("Fail");
-            }
-            } catch (err) {
-                console.log(err);
-            }
-        }
-        
-    };
+          } catch (err) {
+              console.log(err);
+          } 
+      }
   }
 
     const handleSubmit = async (e) => {
@@ -179,6 +194,7 @@ const Profile = () => {
             });
             let resJson = await res.json();
             if (res.status === 200) {
+              setOpenSnackBar(true);
               console.log("Success");
             } else {
               console.log("Fail");
@@ -276,6 +292,8 @@ const Profile = () => {
                 <br></br>
                 <TextField
                 label="New Password"
+                error={invalidPassword}
+                helperText={invalidPassword && invalidPasswordMsg}
                 type="password"
                 value={password}
                 placeholder="password"
@@ -286,6 +304,8 @@ const Profile = () => {
                 <TextField
                 type="password"
                 label="Confirm New Password"
+                error={invalidPassword}
+                helperText={invalidPassword && invalidPasswordMsg}
                 value={confirmPassword}
                 placeholder="confirmPassword"
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -317,7 +337,7 @@ const Profile = () => {
     <React.Fragment>
        {changePicture()}
        {changePassword()}
-       {!profile && <div class="loader"></div>}
+       {!profile && <div className="loader"></div>}
         {/* <div>Profile! :)</div> */}
         {profile &&
         <Grid container spacing={2}>
@@ -438,6 +458,7 @@ const Profile = () => {
               label="Date Of Birth"
               value={dateOfBirth}
               onChange={handleChange}
+              disabled={true}
               renderInput={(params) => <TextField {...params} />}
              />
              </LocalizationProvider>
@@ -446,6 +467,7 @@ const Profile = () => {
                 margin="normal"
                 required
                 fullWidth
+                disabled={true}
                 id="username"
                 label="username"
                 name="username"
@@ -469,7 +491,20 @@ const Profile = () => {
         <Grid item xs={2}></Grid>
       </Grid>}
       
-      
+      {openSnackBar && (
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+        >
+          <Alert
+            onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+            severity="success"
+          >
+            Success!
+          </Alert>
+        </Snackbar>
+      )}
     </React.Fragment>
   //   <React.Fragment>
   //   {!profile && <h1>Loading...</h1>}

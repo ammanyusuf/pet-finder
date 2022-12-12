@@ -268,7 +268,9 @@ export const AddPosts = () => {
                   onChange={(e) => {chosenPet(e.target.value)}}
                 >
                   <MenuItem value="Select a Pet">
-                    -- Select a Pet --
+                    <div style={{opacity: 0.42}}> 
+                      -- Select a pet --
+                    </div>
                   </MenuItem>
                   {pets.map((pet) => (
                     <MenuItem key={pet._id} value={pet._id}>

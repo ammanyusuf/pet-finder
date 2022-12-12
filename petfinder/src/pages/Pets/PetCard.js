@@ -12,6 +12,7 @@ import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import { set } from "react-hook-form";
 
 export const PetCard = (props) => {
+  console.log(props);
   const [index, setIndex] = useState(0);
   const adjustIndexRight = () => {
     if (index == props.photos.length - 1) {
@@ -67,7 +68,7 @@ export const PetCard = (props) => {
         </Typography>
         <Typography variant="body2" color="text.primary" className="petDescription">
           {props.tags.map((tag) => (
-            <span key={tag}>{tag} </span>
+            <span key={tag}>{tag}/</span>
           ))}
         </Typography>
       </CardContent>

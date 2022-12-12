@@ -37,7 +37,7 @@ export const PetFeed = () => {
 
   return (
     <React.Fragment>
-      {!pets &&  <div class="loader"></div>}
+      {!pets &&  <div className="loader"></div>}
       {pets &&
       <React.Fragment>
         <AddPet />
