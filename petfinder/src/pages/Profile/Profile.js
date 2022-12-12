@@ -116,7 +116,7 @@ const Profile = () => {
                 console.log("Success");
                 setOpenSnackBar(true);
                 handleClose();
-                setTimeout(() => {window.location.reload(false)}, 3000);
+                setTimeout(() => {window.location.reload(false)}, 500);
               } else {
                 console.log("Fail");
             }
@@ -159,7 +159,7 @@ const Profile = () => {
               console.log("Success");
               setOpenSnackBar(true);
               handleClose();
-              setTimeout(() => {window.location.reload(false)}, 3000);
+              setTimeout(() => {window.location.reload(false)}, 500);
           } else {
               console.log("Fail");
           }

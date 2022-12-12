@@ -63,7 +63,7 @@ export const AddProfilePicture = () => {
         if (res.status === 200) {
           setOpenSnackBar(true);
           handleClose();
-          setTimeout(() => {window.location.reload(false)}, 3000);
+          setTimeout(() => {window.location.reload(false)}, 500);
           console.log("Success");
         } else {
           console.log("Fail");

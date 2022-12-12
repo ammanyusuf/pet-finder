@@ -249,7 +249,7 @@ function Register() {
                   required
                   fullWidth
                   id="username"
-                  label="username"
+                  label="Username"
                   name="username"
                   autoComplete="Enter Username"
                   autoFocus

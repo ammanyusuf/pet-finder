@@ -181,7 +181,7 @@ export const AddPosts = () => {
         if (res.status === 200) {
           handleClose();
           setOpenSnackBar(true);
-          setTimeout(() => window.location.reload(false), 3000);
+          setTimeout(() => window.location.reload(false), 500);
           console.log("Success");
         } else {
           console.log("Fail");
@@ -296,7 +296,7 @@ export const AddPosts = () => {
             <DialogContentText>
               No pets were found on your account. Please create a pet first.
             </DialogContentText>
-            <Link to="/PetFeed">Goto Pet Page</Link>
+            <Link to="/PetFeed">Go to Pet Page</Link>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>

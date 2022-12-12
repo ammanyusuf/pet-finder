@@ -56,7 +56,7 @@ const PostCard = (props) => {
       let resJson = await res.json();
       if (res.status === 200) {
         setOpenSnackBar(true);
-        setTimeout(() => {window.location.reload(false)}, 3000);
+        setTimeout(() => {window.location.reload(false)}, 500);
         console.log("Success");
       } else {
         console.log("Fail");

@@ -62,7 +62,7 @@ export default function PostComment({ post_id }) {
     if (res.ok) {
       setComment("");
       setOpenSnackBar(true);
-      setTimeout(() => {window.location.reload(false)}, 3000);
+      setTimeout(() => {window.location.reload(false)}, 500);
     } else {
       setError(true);
       setErrorMessage("Something went wrong...");

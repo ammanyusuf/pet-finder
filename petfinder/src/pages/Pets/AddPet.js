@@ -150,7 +150,7 @@ export const AddPet = () => {
         if (res.status === 200) {
           handleClose();
           setOpenSnackBar(true);
-          setTimeout(() => window.location.reload(false), 3000);
+          setTimeout(() => window.location.reload(false), 500);
           console.log("Success");
         } else {
           console.log("Fail");
