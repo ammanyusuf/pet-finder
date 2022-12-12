@@ -13,6 +13,7 @@ const Feed = () => {
   const [sort, setSort] = useState('Date Lost');
   // const [temp, setTemp] = useState([]);
   // let index = 0;
+
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
   const [name, setName] = useState("");
@@ -71,7 +72,7 @@ const Feed = () => {
     "Parrot",
     "Monkey",
   ];
-  
+ 
   useEffect(() => {
     async function fetchPosts() {
       fetch("http://localhost:4000/api/posts")
@@ -123,8 +124,6 @@ const Feed = () => {
 
       }
     }
-
-
   const sortBy = (event) =>{
     if(event.target.value === sort){
       return
