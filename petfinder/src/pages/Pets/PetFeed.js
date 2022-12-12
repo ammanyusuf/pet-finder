@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { Button, Paper, TextField } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import Typography from "@mui/material/Typography";
-import { PostCard } from "../Posts/PostCard";
+import PostCard from "../Posts/PostCard";
 import { PetCard } from "./PetCard";
 import { Link } from "react-router-dom";
 import AddPet from "./AddPet";

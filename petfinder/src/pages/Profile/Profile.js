@@ -142,7 +142,7 @@ const Profile = () => {
             if (res.status === 200) {
                 console.log("Success");
                 handleClose();
-                window.location.reload(true);
+                window.location.reload(false);
             } else {
                 console.log("Fail");
             }

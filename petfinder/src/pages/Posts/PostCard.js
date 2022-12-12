@@ -21,7 +21,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export const PostCard = (props) => {
+const PostCard = (props) => {
   const auth = useContext(AuthContext);
   const [resolved, setResolved] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
@@ -105,7 +105,7 @@ export const PostCard = (props) => {
               } 
             </>
         }
-          subheader={`Author: ${props.author.username} - ${calcTimeFromNow(props.createdAt)}`}
+          subheader={`Author: ${props.author.username} - Date Lost: ${calcTimeFromNow(props.dateLost)}  Created At: ${calcTimeFromNow(props.createdAt)}`}
           
         />
         <CardMedia
@@ -160,3 +160,5 @@ export const PostCard = (props) => {
     </React.Fragment>
   );
 };
+
+export default PostCard
