@@ -12,7 +12,7 @@ import AddPet from "./pages/Pets/AddPet";
 import PetFeed from "./pages/Pets/PetFeed";
 import Register from "./pages/Profile/Register";
 import Profile from "./pages/Profile/Profile";
-import Search from "./Search";
+
 
 import Feed from "./Feed";
 import UserPostFeed from "./pages/Posts/UserPostFeed";
@@ -80,7 +80,6 @@ function App() {
         <Route element={<AddPet />} path="/AddPet" />
         <Route element={<PetFeed />} path="/PetFeed" />
         <Route element={<Profile />} path="/Profile" />
-        <Route element={<Search />} path ="/Search" />
         <Route element={<Navigate to="/Home" replace />} path="/login" />
         <Route path='*' element={<NotFound />}/>
       </React.Fragment>
@@ -92,7 +91,6 @@ function App() {
         <Route element={<Feed />} path="/Home" />
         <Route element={<ViewPost />} path="/ViewPost" />
         <Route element={<Register />} path="/Register" />
-        <Route element={<Search />} path ="/Search" />
         <Route path='*' element={<NotFound />}/>
       </React.Fragment>
     );

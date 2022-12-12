@@ -4,7 +4,7 @@ const { response } = require("express");
 const moment = require("moment");
 
 const getPosts = async (req, res) => {
-  console.log("Hello from posts");
+  //console.log("Hello from posts");
   const hello = { hello: "hello" };
 
   //get all posts, sorted by most recent
@@ -20,12 +20,18 @@ const getPosts = async (req, res) => {
 
 const getPost = async (req, res) => {
   const { id } = req.params;
+  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
+    if(count>0){
 
   const post = await Posts.Post.findById({ _id: id })
     .populate({ path: "comments", populate: "author" })
     .populate("author");
 
   res.status(200).json(post);
+    }else{
+      return res.status(400).json({ error: "No such post" });
+    }
+  });
 };
 
 const makePost = async (req, res) => {
@@ -71,6 +77,8 @@ const makePost = async (req, res) => {
 
 const updatePost = async (req, res) => {
   //post id will be appended to params when clicked (button press)
+  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
+    if(count>0){
   const { id } = req.params;
 
   const postCheck = await Posts.Post.findOne({ _id: id });
@@ -95,6 +103,10 @@ const updatePost = async (req, res) => {
   }
 
   res.status(200).json(postToUpdate);
+}else{
+    return res.status(400).json({ error: "No such post" });
+}
+  });
 
   //console.log("We are updating this post to resolve or comment", id)
   //res.send("We have updated your post, happy pet finding " + id + "!")
@@ -103,87 +115,67 @@ const updatePost = async (req, res) => {
 const searchPost = async (req, res) => {
   //inputs coming from frontend will populate this json object
   //populated fields will be used to search and filter db results
-  const { resolved, animal, breed, date, tag, location } = req.body;
+  //const { resolved, animal, breed, date, tag, location } = req.body;
 
-  // console.log(JSON.stringify(req.body));
 
-  var searchQuery = {
-    resolved: req.body.resolved,
-    Location: req.body.Location,
-    animal: req.body.animal
+  
+  const searchQuery = {
+    // resolved: req.body.resolved,
+    // Location: req.body.Location,
+    animal: req.body.animal,
+    breed: req.body.breed,
+    name: req.body.name,
+    tags: req.body.tags
+    // tags: req.body.tags
   };
+  // console.log(searchQuery.tags);
+  searchQuery.tags = searchQuery.tags.split(',');
+  // $all: searchQuery.tags
+  // console.log(searchQuery.tags)
+  // console.log(JSON.stringif(req.body));
+  if (searchQuery.breed == ''){
+    searchQuery.breed =  /./
+  
+  }else{
+    breed =  req.body.breed
+  }
 
-  let filter = req.body;
-  console.log(JSON.stringify(req.body));
-  console.log(searchQuery)
+  
+  let post2;
+  console.log(searchQuery.tags)
+  
+  // const tagArray = Array.from(searchQuery.tags);
+  for(let j = 0; j < searchQuery.tags.length; j++)
+  {
+    searchQuery.tags[j] = searchQuery.tags[j].replace(/\s/g, '');
+    console.log(searchQuery.tags[j])
 
-  const post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$eq: animal}}})
+  // }
+  }
+  const tagArray = JSON.stringify(searchQuery.tags)
+  console.log(tagArray)
+
+  if(searchQuery.tags[0] === '')
+  {
+    post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}}}).populate({ path: "comments", populate: "author" }).populate('author')
                                                   .then((orders) => orders.filter((order) => order.pet != null))
-  // match : {animal : { $eq : animal}}})
-  //.then((orders)=>orders.filter((order=>order.pet !=null)));
-  // const { id } = req.params
-
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //     return res.status(400).json({error: 'No such post'})
-  // }
-
-  // const post = await Posts.Post.findById({_id: id})
-  //const post = await Posts.Post.find({ resolved: false}).exec();
-  const post = await Posts.Post.find({})
-    .populate({ path: "pet", match: { animal: { $eq: animal } } })
-    .then((orders) => orders.filter((order) => order.pet != null));
-
+  }
+  else
+  {
+    post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}, tags: {$in: searchQuery.tags}}}).populate({ path: "comments", populate: "author" }).populate('author')
+                                                   .then((orders) => orders.filter((order) => order.pet != null))
+  //   post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}, tags: {$in: tagArray}
+  // }}).populate({ path: "comments", populate: "author" }).populate('author')
+  //                                                 .then((orders) => orders.filter((order) => order.pet != null))
+                                                
+  }
   res.status(200).json(post2);
-  // const post2 = await Posts.Post.find({ Location : location}).populate('pet').select('_id');
-  // // const post = await Posts.Post.find({}).populate('pet').find({resolved : false})
-  // //const {_id} = post[0]
-  // results = [post, post2]
-  // console.log(results)
-  // filterResults = []
-  // //console.log(_id)
-
-  // for(let i = 0; i < results.length; i++)
-  // {
-  //     for(let j = 0; j < results[i].length; j++)
-  //     {
-  //         console.log(results[i][j])
-  //         const {_id} = results[i][j][0]
-  //         const temp = JSON.stringify(_id)
-  //         // const {_id} = results[i][0]
-  //         console.log(typeof temp,temp, i)
-  //         //filterResults.push(_id)
-  //         //console.log(results[j][0][0])
-  //         if(filterResults.includes(temp) === false)
-  //         {
-  //             console.log("adding")
-  //             filterResults.push(temp)
-  //         }
-  //     }
-
-  // }
-  // theFinalList = []
-  // for(let i = 0; i < filterResults.length; i++)
-  // {
-  //     // filterResults[i] = `{'_id' : ${filterResults[i]}}`
-
-  //     filterResults[i] = filterResults[i].replace(/['‘’"“”]/g, '')
-  //     console.log(filterResults[i])
-  //     // filterResults[i] = JSON.parse(filterResults[i])
-  //     theFinalList[i] = await Posts.Post.findById({_id: filterResults[i]}).populate('comments').populate('author')
-  // }
-
-  // if (results.length == 0) {
-  //     return res.status(400).json({error: 'No posts match search'})
-  // }
-
-  // res.status(200).json(theFinalList)
-
-  //console.log("We are finding your post " + id + ". But it's hard! So give us a sec")
-  //res.send("We have found your post, happy pet finding " + id + "!")
 };
 
 const deletePost = async (req, res) => {
   //when delete button pressed, append id of post to url so it can be used to delete from db
+  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
+  if(count>0){
   const { id } = req.params;
 
   const person = await Posts.Post.findOne({ _id: id });
@@ -195,6 +187,10 @@ const deletePost = async (req, res) => {
   const post = await Posts.Post.findOneAndDelete({ _id: id });
 
   res.status(200).json(post);
+  }else{
+    return res.status(400).json({ error: "No such post" });
+  }
+});
 
   // console.log("We are deleting your post " + id + ". One moment please")
   // res.send("We have deleted your doge post dog, happy pet finding " + id + "!")
@@ -203,6 +199,8 @@ const deletePost = async (req, res) => {
 const updateComment = async (req, res) => {
   //in frontend the id of the post and comment will be appended to the url.
   //Do this when user clicks a update button and this api function is called
+  Posts.Comment.countDocuments({_id: cid}, async function (err, count){ 
+  if(count>0){
   const { id, cid } = req.params;
 
   const { upvote } = req.body;
@@ -229,6 +227,10 @@ const updateComment = async (req, res) => {
     );
     res.status(200).json(comment);
   }
+}else{
+  return res.status(400).json({ error: "No such Comment" });
+}
+  });
 
   // res.status(200).json(comment)
 
@@ -240,33 +242,41 @@ const deleteComment = async (req, res) => {
   //in frontend the id of the post and comment will be appended to the url. Do this when user clicks a delete button and this is called
   const { id, cid } = req.params;
 
-  const commentCheck = await Posts.Comment.findById({ _id: cid });
-  console.log(commentCheck);
 
-  if (commentCheck.author != req.user.id) {
-    res.send("what you doing dawg, this ain't your comment to delete");
+  Posts.Comment.countDocuments({_id: cid}, async function (err, count){ 
+  if(count>0){
+      const commentCheck = await Posts.Comment.findById({ _id: cid });
+      console.log(commentCheck);
+    
+      if (commentCheck.author != req.user.id) {
+        res.send("what you doing dawg, this ain't your comment to delete");
+      }
+    
+      const comment = await Posts.Comment.findOneAndDelete({ _id: cid });
+    
+      const post = await Posts.Post.findById({ _id: id });
+    
+      for (var i = 0; i < post.comments.length; i++) {
+        temp = JSON.stringify(post.comments[i]);
+    
+        if (temp == `"${cid}"`) {
+          console.log("I'm here. Delete me");
+    
+          post.comments.splice(i, 1);
+        }
+      }
+      // const index = post.comments.indexOf(`new ObjectId("${cid}")`);
+      // if (index > -1) { // only splice array when item is found
+      //     post.comments.splice(index, 1); // 2nd parameter means remove one item only
+      // }
+      await post.save();
+      res.status(200).json(post);
+      //res.status(200).json(comment)
+   }else{
+    return res.status(400).json({ error: "No such Comment" });
   }
-
-  const comment = await Posts.Comment.findOneAndDelete({ _id: cid });
-
-  const post = await Posts.Post.findById({ _id: id });
-
-  for (var i = 0; i < post.comments.length; i++) {
-    temp = JSON.stringify(post.comments[i]);
-
-    if (temp == `"${cid}"`) {
-      console.log("I'm here. Delete me");
-
-      post.comments.splice(i, 1);
-    }
-  }
-  // const index = post.comments.indexOf(`new ObjectId("${cid}")`);
-  // if (index > -1) { // only splice array when item is found
-  //     post.comments.splice(index, 1); // 2nd parameter means remove one item only
-  // }
-  await post.save();
-  res.status(200).json(post);
-  //res.status(200).json(comment)
+}); 
+  
 
   // console.log("We are deleting your post " + id + ". One moment please")
   // res.send("We have deleted your doge post dog, happy pet finding " + id + "!")

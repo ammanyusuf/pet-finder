@@ -8,7 +8,7 @@ const router = express.Router()
 
 
 //search post route
-router.get('/search', searchPost)
+router.post('/search', searchPost)
 
 /*
     getting, making, updating, deleting post and comment routes
