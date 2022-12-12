@@ -26,9 +26,13 @@ const registerUser = async (req, res) => {
   const emailInDb = await db.User.findOne({ email: email });
   dateOfBirth instanceof Date;
 
+  
+  const re = /.+\@.+\..+/;
+
   //email and username must be unique
-  if (userInDb != null && emailInDb != null) {
-    res.send("User already in db, too slow, slow poke");
+  if (userInDb != null || emailInDb != null || !re.test(email)) {
+    res.json({validReg: false});
+    console.log('Caught');
   } else {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
 
@@ -44,7 +48,8 @@ const registerUser = async (req, res) => {
     });
 
     newUser.save();
-    res.json(newUser);
+    // res.json(newUser);
+    res.json({validReg: true});
   }
 };
 
@@ -212,6 +217,13 @@ const updateUser = async (req, res) => {
     console.log(req.body.password)
 
   }
+  const re = /.+\@.+\..+/;
+  if(req.body.email != undefined && !re.test(req.body.email)){
+    console.log('Fake Email');
+    res.send("Invalid Email");
+
+    
+  }else{
   
   
 
@@ -229,6 +241,7 @@ const updateUser = async (req, res) => {
   const user = await db.User.findOne({ _id: req.user.id }).populate("pets");
 
   res.status(200).json(user);
+}
 };
 
 const addProfilePic = async (req, res) => {

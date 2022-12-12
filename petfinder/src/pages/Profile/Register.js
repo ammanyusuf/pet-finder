@@ -84,7 +84,8 @@ function Register() {
       setPasswordErrorMsg("");
     }
 
-    if (data.email.length === 0) {
+    const re = /.+\@.+\..+/;
+    if (data.email.length === 0 || !re.test(data.email)) {
       setInvalidEmail(true);
       validated = false;
       console.log('invalid email');
@@ -132,7 +133,8 @@ function Register() {
           },
         });
         let resJson = await res.json();
-        if (res.status === 200) {
+
+        if (resJson.validReg) {
           console.log("Successful Register");
           window.location.href = '/Login';
           //handleClose();
@@ -140,6 +142,7 @@ function Register() {
           //auth.login(token, username, id);
         } else {
           console.log("Fail");
+          setInvalidUserName(true);
         }
       } catch (err) {
         console.log(err);
