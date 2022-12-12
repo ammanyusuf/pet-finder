@@ -4,9 +4,14 @@ import InputBase from "@mui/material/InputBase";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
-import Alert from "@mui/material/Alert";
 import AlertTitle from "@mui/material/AlertTitle";
+import Snackbar from "@mui/material/Snackbar";
+import MuiAlert from "@mui/material/Alert";
 import { AuthContext } from "../../context/auth-context";
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 export default function PostComment({ post_id }) {
   const auth = useContext(AuthContext);
@@ -14,6 +19,8 @@ export default function PostComment({ post_id }) {
   const [errorMessage, setErrorMessage] = useState("error");
   const [error, setError] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [openSnackBar, setOpenSnackBar] = useState(false);
+
 
   const onChange = (e) => setComment(e.target.value);
   const handleSubmit = async () => {
@@ -54,11 +61,8 @@ export default function PostComment({ post_id }) {
     );
     if (res.ok) {
       setComment("");
-      setSuccess(true);
-      setTimeout(() => {
-        setSuccess(false);
-      }, 3000);
-      window.location.reload(false);
+      setOpenSnackBar(true);
+      setTimeout(() => {window.location.reload(false)}, 1500);
     } else {
       setError(true);
       setErrorMessage("Something went wrong...");
@@ -72,12 +76,6 @@ export default function PostComment({ post_id }) {
         <Alert severity="error">
           <AlertTitle>Error</AlertTitle>
           {errorMessage}
-        </Alert>
-      )}
-      {success && (
-        <Alert severity="success">
-          <AlertTitle>Success</AlertTitle>
-          Comment added!
         </Alert>
       )}
       {auth.isLoggedIn && (
@@ -110,6 +108,20 @@ export default function PostComment({ post_id }) {
             <ControlPointIcon />
           </IconButton>
         </Paper>
+      )}
+      {openSnackBar && (
+        <Snackbar
+          open={openSnackBar}
+          autoHideDuration={6000}
+          onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+        >
+          <Alert
+            onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
+            severity="success"
+          >
+            Added post! Page will refresh shortly. 
+          </Alert>
+        </Snackbar>
       )}
     </React.Fragment>
   );

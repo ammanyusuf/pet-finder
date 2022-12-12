@@ -4,7 +4,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Navigate 
+  Navigate,
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import AddPost from "./pages/Posts/AddPosts";
@@ -20,6 +20,7 @@ import ViewPost from "./pages/Posts/ViewPost";
 import { AuthContext } from "./context/auth-context";
 import Navbar from "./Navbar";
 import Navbar2 from "./NavBar2";
+import { NotFound } from "./NotFound"
 
 let logoutTimer;
 function App() {
@@ -33,7 +34,7 @@ function App() {
     setName(name);
     setUserId(id);
     // const tokenExpiration = texpirationDate || new Date(new Date().getTime()+ 1000*60*60) //1000*60*60 converts to one hour after current time
-    const tokenExpiration = texpirationDate || new Date(new Date().getTime()+ 1000*60*5) //1000*60*60 converts to one hour after current time
+    const tokenExpiration = texpirationDate || new Date(new Date().getTime()+ 1000*60*60*24) //1000*60*60 converts to one hour after current time
     setExpirationDate(tokenExpiration);
     localStorage.setItem(
       "userData",
@@ -42,6 +43,7 @@ function App() {
   }, []);
 
   const logout = useCallback(() => {
+    window.location.replace("/Home");
     setToken(null);
     setName(null);
     setUserId(null);
@@ -78,7 +80,9 @@ function App() {
         <Route element={<AddPet />} path="/AddPet" />
         <Route element={<PetFeed />} path="/PetFeed" />
         <Route element={<Profile />} path="/Profile" />
-        <Route elemet={<Search />} path ="/Search" />
+        <Route element={<Search />} path ="/Search" />
+        <Route element={<Navigate to="/Home" replace />} path="/login" />
+        <Route path='*' element={<NotFound />}/>
       </React.Fragment>
     );
   } else {
@@ -89,7 +93,7 @@ function App() {
         <Route element={<ViewPost />} path="/ViewPost" />
         <Route element={<Register />} path="/Register" />
         <Route element={<Search />} path ="/Search" />
-        <Route element={<Navigate replace to="/Home" />} path="*"/>
+        <Route path='*' element={<NotFound />}/>
       </React.Fragment>
     );
   }

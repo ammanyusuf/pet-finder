@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { PostCard } from "./PostCard";
+import PostCard from "./PostCard";
 import { SinglePostCard } from "./SinglePostCard";
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
+
+
 import "../../App.css";
 
 
 const ViewPost = () => {
+  const navigate = useNavigate();
   const [id, setId] = useState("");
   const [post, setPost] = useState();
   function parsePostLink(href) {
@@ -43,7 +50,14 @@ const ViewPost = () => {
   return (
     <React.Fragment>
       {!post &&  <div class="loader"></div>}
-      {post && <SinglePostCard {...post} />}
+      {post && 
+      <React.Fragment>
+      <IconButton aria-label="delete" size="large" onClick={() => navigate(-1)}>
+        <ArrowBackIcon fontSize="inherit"/>
+      </IconButton>
+      <SinglePostCard {...post} />
+      </React.Fragment>
+      }
     </React.Fragment>
   );
 };

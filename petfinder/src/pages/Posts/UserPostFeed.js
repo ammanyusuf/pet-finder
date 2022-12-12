@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 
-import { PostCard } from "./PostCard";
+import PostCard from "./PostCard";
 import AddPosts from "./AddPosts";
 import { AuthContext } from "../../context/auth-context";
 

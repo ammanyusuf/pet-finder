@@ -38,7 +38,13 @@ export const SinglePostCard = (props) => {
 
   const sortTime = (time) => {
     time.sort(function (a, b) {
-      return Date.parse(b.dateLost) - Date.parse(a.dateLost);
+      return a.up - Date.parse(a.dateLost);
+    });
+  };
+
+  const sortByUpvotes = (comments) => {
+    comments.sort(function (a, b) {
+      return b.upvotes - a.upvotes;
     });
   };
 
@@ -150,7 +156,7 @@ export const SinglePostCard = (props) => {
         )}
 
         <PostComment  post_id={props._id} />
-        {sortTime(props.comments)}
+        {sortByUpvotes(props.comments)}
         {props.comments.map((comment) => (
           <div key={comment._id}>
             <ViewComment {...comment} post_id={props._id} />
