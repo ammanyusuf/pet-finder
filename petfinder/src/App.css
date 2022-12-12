@@ -120,8 +120,10 @@
   animation: spin 2s linear infinite;
   display: flex;
   justify-content: center;
-  margin-left: 45%;
-  margin-right: 45%;
+  /* margin-left: 45%;
+  margin-right: 45%; */
+  align-items: center;
+  margin: auto;
 }
 
 @keyframes spin {

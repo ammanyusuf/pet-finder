@@ -1,11 +1,81 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { PostCard } from "./pages/Posts/PostCard";
 import "./App.css";
+import Button from "@mui/material/Button";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+
+
+
+
+
+
+
 
 
 const Feed = () => {
   const [posts, setPosts] = useState();
 
+  const [animal, setAnimal] = useState("");
+  const [breed, setBreed] = useState("");
+  const [name, setName] = useState("");
+  const [tags, setTags] = useState("")
+  const [author, setAuthorName] = useState("")
+
+
+  const handleFilter = async (e) => {
+    e.preventDefault();
+    const data = {
+      animal : animal,
+      breed : breed,
+      name: name,
+      tags: tags
+      //author: author
+    };
+    try {
+      let res = await fetch("http://localhost:4000/api/posts/search", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+        }}).then((res) => res.json())
+        .then(
+          (result) => {
+            console.log(result)
+            let nonResolved = Array.from(result);
+            console.log(nonResolved);
+            // let nonResolved = Array.from(result);
+            // nonResolved = nonResolved.filter((x) => x.resolved === false);
+            let recentPosts = Array.from(nonResolved);
+            recentPosts.sort(function (a, b) {
+               console.log(Date.parse(b.dateLost) - Date.parse(a.dateLost));
+            });
+           setPosts(recentPosts);
+          })
+        }
+        
+    catch{
+        console.log("error retrieving from db")
+  
+      }
+    }
+  
+
+  let animalsTop50 = [
+    "Dog",
+    "Cat",
+    "Rabbit",
+    "Lizard",
+    "Fish",
+    "Horse",
+    "Hamster",
+    "Chicken",
+    "Ferret",
+    "Parrot",
+    "Monkey",
+  ];
+  
   useEffect(() => {
     async function fetchPosts() {
       fetch("http://localhost:4000/api/posts")
@@ -28,8 +98,76 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
+  const clear = async (e) => {
+    e.preventDefault();
+    setAnimal("")
+    setBreed("")
+    setName("")
+    setTags("")
+    try {
+      fetch("http://localhost:4000/api/posts")
+        .then((res) => res.json())
+        .then(
+          (result) => {
+            let nonResolved = Array.from(result);
+            nonResolved = nonResolved.filter((x) => x.resolved === false);
+            let recentPosts = Array.from(nonResolved);
+            recentPosts.sort(function (a, b) {
+              return Date.parse(b.dateLost) - Date.parse(a.dateLost);
+            });
+            setPosts(recentPosts);
+          },
+          (error) => {
+            console.log(error);
+          }
+        );
+      }
+      catch 
+      {
+
+      }
+    }
+
+
   return (
     <React.Fragment>
+      {/* <TextField
+              type="text"
+              value={author}
+              placeholder="User name"
+              onChange={(e) => setAuthorName(e.target.value)}
+            /> */}
+      <TextField
+              type="text"
+              value={name}
+              placeholder="Pet Name"
+              onChange={(e) => setName(e.target.value)}
+            />
+            <TextField
+              type="text"
+              value={breed}
+              placeholder="Breed"
+              onChange={(e) => setBreed(e.target.value)}
+            />
+            <Select value={animal} onChange={(e) => setAnimal(e.target.value)}>
+            <MenuItem value="⬇️ Select an Animal ⬇️">
+              -- Select a Animal --{" "}
+            </MenuItem>
+            {animalsTop50.map((animal) => (
+              <MenuItem key={animal} value={animal}>
+                {animal}
+              </MenuItem>
+            ))}
+          </Select>
+
+          <TextField
+              type="tags"
+              value={tags}
+              placeholder="tags"
+              onChange={(e) => setTags(e.target.value)}
+            />
+          <Button onClick={handleFilter}>Filter</Button>
+          <Button onClick={clear}>Clear</Button>
      {!posts &&  <div class="loader"></div>}
       {posts && posts.map((post) => (
         <div key={post._id}>
@@ -39,5 +177,8 @@ const Feed = () => {
     </React.Fragment>
   );
 };
+
+
+
 
 export default Feed;

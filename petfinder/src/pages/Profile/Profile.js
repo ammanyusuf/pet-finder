@@ -459,7 +459,7 @@ const Profile = () => {
                 variant="contained"
                 sx={{ mt: 3, mb: 2 }}
               >
-                Update Profile (Old one sucked)
+                Update Profile
               </Button>
               
               {/* <Copyright sx={{ mt: 5 }} /> */}
