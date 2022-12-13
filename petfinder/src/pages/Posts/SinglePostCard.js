@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -39,7 +39,7 @@ export const SinglePostCard = (props) => {
     } else {
       setResolvedText("Post has not been resolved");
     }
-  }, []);
+  }, [props.resolved]);
 
   const sortByUpvotes = (comments) => {
     comments.sort(function (a, b) {
@@ -87,7 +87,7 @@ export const SinglePostCard = (props) => {
           "x-access-token": auth.token,
         },
       });
-      let resJson = await res.json();
+      await res.json();
       if (res.status === 200) {
         setOpenSnackBar(true);
         setResolvedText("Post has been resolved");

@@ -5,7 +5,7 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -20,14 +20,14 @@ export const PetCard = (props) => {
   console.log(props);
   const [index, setIndex] = useState(0);
   const adjustIndexRight = () => {
-    if (index == props.photos.length - 1) {
+    if (index === props.photos.length - 1) {
       setIndex(0);
     } else {
       setIndex((index) => index + 1);
     }
   };
   const adjustIndexLeft = () => {
-    if (index == 0) {
+    if (index === 0) {
       setIndex(props.photos.length - 1);
     } else {
       setIndex((index) => index - 1);

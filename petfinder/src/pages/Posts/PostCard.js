@@ -4,12 +4,9 @@ import Card from "@mui/material/Card";
 import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
 import CardActionArea from "@mui/material/CardActionArea";
-import Collapse from "@mui/material/Collapse";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import Snackbar from "@mui/material/Snackbar";
 import { AuthContext } from "../../context/auth-context";
@@ -59,7 +56,7 @@ const PostCard = (props) => {
           "x-access-token": auth.token,
         },
       });
-      let resJson = await res.json();
+      await res.json();
       if (res.status === 200) {
         setOpenSnackBar(true);
         setTimeout(() => {
