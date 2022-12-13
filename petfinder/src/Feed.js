@@ -20,7 +20,10 @@ const Feed = () => {
   const [author, setAuthorName] = useState("");
 
   const handleFilter = async (e) => {
-    e.preventDefault();
+    
+    if(e !== undefined){
+      e.preventDefault();
+    }
     const data = {
       animal: animal,
       breed: breed,
@@ -41,11 +44,16 @@ const Feed = () => {
           console.log(result);
           let nonResolved = Array.from(result);
           console.log(nonResolved);
+          if(!resolved){
+            nonResolved = nonResolved.filter((x) => x.resolved === false);
+          }else{
+            nonResolved = nonResolved.filter((x) => x.resolved === true);
+          }
           // let nonResolved = Array.from(result);
           // nonResolved = nonResolved.filter((x) => x.resolved === false);
           let recentPosts = Array.from(nonResolved);
           recentPosts.sort(function (a, b) {
-            console.log(Date.parse(b.dateLost) - Date.parse(a.dateLost));
+            return (Date.parse(b.dateLost) - Date.parse(a.dateLost));
           });
           setPosts(recentPosts);
         });
@@ -92,7 +100,11 @@ const Feed = () => {
         );
     }
     fetchPosts();
-  }, [resolved]);
+  }, []);
+
+  useEffect(()=>{
+    handleFilter();
+},[resolved] )
 
   const clear = async (e) => {
     e.preventDefault();
@@ -106,7 +118,11 @@ const Feed = () => {
         .then(
           (result) => {
             let nonResolved = Array.from(result);
-            nonResolved = nonResolved.filter((x) => x.resolved === false);
+            if(!resolved){
+              nonResolved = nonResolved.filter((x) => x.resolved === false);
+            }else{
+              nonResolved = nonResolved.filter((x) => x.resolved === true);
+            }
             let recentPosts = Array.from(nonResolved);
             recentPosts.sort(function (a, b) {
               return Date.parse(b.dateLost) - Date.parse(a.dateLost);
@@ -136,6 +152,18 @@ const Feed = () => {
       setSort(event.target.value);
       setPosts(tempPosts);
     }
+  };
+
+  const handleSwitch = () => {
+    console.log(resolved);
+    setResolved(!resolved);
+    // const timer = setTimeout(() => {
+    //   console.log(resolved);
+    //   handleFilter();
+    // }, 1000);
+
+   
+
   };
 
   return (
@@ -200,7 +228,7 @@ const Feed = () => {
                       // label='Resolved Posts'
                       size="xlarge"
                       checked={resolved}
-                      onChange={() => setResolved(!resolved)}
+                      onChange={() => handleSwitch()}
                       // inputProps={{ 'aria-label': 'controlled' }}
                     />
                   </Grid>
