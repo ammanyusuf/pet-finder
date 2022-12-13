@@ -8,11 +8,6 @@
 *** Thanks again! Now go create something AMAZING! :D
 -->
 
-<!-- Reference for this template -->
-## Reference for this template
-[https://github.com/othneildrew/Best-README-Template/pull/73 ](https://github.com/othneildrew/Best-README-Template)
-
-
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
@@ -119,6 +114,10 @@ nearby or in some other location!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+
+<!-- Reference for this template -->
+## Reference for this template
+[https://github.com/othneildrew/Best-README-Template/pull/73 ](https://github.com/othneildrew/Best-README-Template)
 
 
 <!-- MARKDOWN LINKS & IMAGES -->
