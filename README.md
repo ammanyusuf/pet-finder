@@ -66,7 +66,7 @@ nearby or in some other location!
    npm install
    ```
 
-### Installation
+### Installation and Run
 
 1. Clone this repo 
    ```sh
