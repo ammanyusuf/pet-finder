@@ -76,6 +76,7 @@ nearby or in some other location!
     ```sh
    # install locally (recommended)
    npm install dotenv --save 
+   npm install react-scripts
    ```
  3. Navigate to folder "backend" and run in terminal
     ```sh
