@@ -91,9 +91,11 @@ nearby or in some other location!
     ```sh
     npm start
     ``` 
- 5. React app will run in  
-    ```sh localhost:3000 ``` 
-    and server runs in ```sh port:4000 ```  
+ 5. Web application runs as follows  
+    ```sh 
+    React localhost:3000 
+    server port:4000 
+    ```  
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
