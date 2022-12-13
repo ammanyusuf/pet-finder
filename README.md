@@ -37,10 +37,6 @@ The broad community of users can help find the lost pet by offering to share kno
 nearby or in some other location!
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 ### Built With
 
 * [![Node][Node.js]][Node-url]
@@ -48,8 +44,6 @@ nearby or in some other location!
 * [![Mongo][MongoDB]][MongoDB-url]
 * [![MaterialUI][MaterialUI]][Material-url]
 * [![Express][Express.js]][Express-url]
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 
 
@@ -98,10 +92,6 @@ nearby or in some other location!
     ```  
 
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
-
 <!-- COLLABORATORS -->
 ## Collaborators
 
@@ -111,18 +101,11 @@ nearby or in some other location!
 * Matthew Jarrams 
 * Syed Farhan Ahmed
 
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 <!-- Future Work -->
 ## Future Work
 
 - [ ] Google API
-
-<p align="right">(<a href="#readme-top">back to top</a>)</p>
-
-
 
 
 
