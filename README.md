@@ -16,8 +16,8 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="[image](https://github.com/nkouki98/SENG-513/blob/main/Spike2.png)">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
+  <a href="https://github.com/nkouki98/SENG-513/blob/main/Spike2.png">
+    <img src="https://github.com/nkouki98/SENG-513/blob/main/Spike2.png" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Pet-Finder Application</h3>
