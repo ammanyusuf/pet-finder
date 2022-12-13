@@ -14,43 +14,20 @@ import { ViewComment } from "../Comments/ViewComment";
 import PostComment from "../Comments/PostComment";
 
 export const ProfileCard = (props) => {
-//   const [index, setIndex] = useState(0);
-
   return (
     <React.Fragment>
       <Card variant="outlined" style={{ border: "1px solid black" }}>
         <CardHeader
           avatar={<Avatar src={props.picture}></Avatar>}
           title={props.username}
-        //   subheader={`Author: ${props.author.username}`}
         />
-        {/* <CardMedia
-          component="img"
-          height="200"
-          image={props.photos[index]}
-          alt="Missing"
-          sx={{ objectFit: "contain" }}
-        /> */}
         <CardContent>
-          
           <Typography variant="body2" color="text.primary">
             Hash Password: {props.password}
           </Typography>
         </CardContent>
-        <CardActions>
-          {/* <IconButton
-            edge="start"
-            aria-label="delete"
-            // onClick={adjustIndexLeft}
-          >
-            <NavigateBeforeIcon />
-          </IconButton> */}
-          {/* <IconButton edge="end" aria-label="delete" onClick={adjustIndexRight}>
-            <NavigateNextIcon />
-          </IconButton> */}
-        </CardActions>
+        <CardActions></CardActions>
       </Card>
-      
     </React.Fragment>
   );
 };

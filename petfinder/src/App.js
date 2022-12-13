@@ -13,16 +13,13 @@ import PetFeed from "./pages/Pets/PetFeed";
 import Register from "./pages/Profile/Register";
 import Profile from "./pages/Profile/Profile";
 
-
 import Feed from "./Feed";
 import UserPostFeed from "./pages/Posts/UserPostFeed";
 import ViewPost from "./pages/Posts/ViewPost";
 import { AuthContext } from "./context/auth-context";
 import Navbar from "./Navbar";
-import Navbar2 from "./NavBar2";
-import { NotFound } from "./NotFound"
+import { NotFound } from "./NotFound";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-
 
 let logoutTimer;
 function App() {
@@ -36,11 +33,17 @@ function App() {
     setName(name);
     setUserId(id);
     // const tokenExpiration = texpirationDate || new Date(new Date().getTime()+ 1000*60*60) //1000*60*60 converts to one hour after current time
-    const tokenExpiration = texpirationDate || new Date(new Date().getTime()+ 1000*60*60*24) //1000*60*60 converts to one hour after current time
+    const tokenExpiration =
+      texpirationDate || new Date(new Date().getTime() + 1000 * 60 * 60 * 24); //1000*60*60 converts to one hour after current time
     setExpirationDate(tokenExpiration);
     localStorage.setItem(
       "userData",
-      JSON.stringify({ token: token, name: name, userId: id,  expiration: tokenExpiration.toISOString() })
+      JSON.stringify({
+        token: token,
+        name: name,
+        userId: id,
+        expiration: tokenExpiration.toISOString(),
+      })
     );
   }, []);
 
@@ -55,17 +58,27 @@ function App() {
 
   useEffect(() => {
     const storedData = JSON.parse(localStorage.getItem("userData"));
-    if (storedData && storedData.token && storedData.userId && new Date(storedData.expiration) > new Date()) {
-      login(storedData.token, storedData.name, storedData.userId, new Date(storedData.expiration));
+    if (
+      storedData &&
+      storedData.token &&
+      storedData.userId &&
+      new Date(storedData.expiration) > new Date()
+    ) {
+      login(
+        storedData.token,
+        storedData.name,
+        storedData.userId,
+        new Date(storedData.expiration)
+      );
     }
   }, [login]);
 
   useEffect(() => {
-    if(token && expirationDate){
+    if (token && expirationDate) {
       const remainingTime = expirationDate.getTime() - new Date().getTime();
-      console.log("Remaning Time: "+remainingTime);
-      logoutTimer = setTimeout(logout, remainingTime)
-    } else{
+      console.log("Remaning Time: " + remainingTime);
+      logoutTimer = setTimeout(logout, remainingTime);
+    } else {
       clearTimeout(logoutTimer);
     }
   }, [token, logout, expirationDate]);
@@ -75,15 +88,15 @@ function App() {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#306BAC'
+        main: "#306BAC",
       },
       secondary: {
-        main: '#141B41'
+        main: "#141B41",
       },
       tertiary: {
-        main: '#C4DAFF'
-      }
-    }
+        main: "#C4DAFF",
+      },
+    },
   });
 
   if (token) {
@@ -97,7 +110,7 @@ function App() {
         <Route element={<PetFeed />} path="/PetFeed" />
         <Route element={<Profile />} path="/Profile" />
         <Route element={<Navigate to="/Home" replace />} path="/login" />
-        <Route path='*' element={<NotFound />}/>
+        <Route path="*" element={<NotFound />} />
       </React.Fragment>
     );
   } else {
@@ -107,7 +120,7 @@ function App() {
         <Route element={<Feed />} path="/Home" />
         <Route element={<ViewPost />} path="/ViewPost" />
         <Route element={<Register />} path="/Register" />
-        <Route path='*' element={<NotFound />}/>
+        <Route path="*" element={<NotFound />} />
       </React.Fragment>
     );
   }
