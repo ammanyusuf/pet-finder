@@ -16,7 +16,7 @@
 <!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/github_username/repo_name">
+  <a href="[image](https://github.com/nkouki98/SENG-513/blob/main/Spike2.png)">
     <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
@@ -133,3 +133,4 @@ nearby or in some other location!
 [React.js]:https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB
 [React-url]:https://reactjs.org/
 [product-screenshot]:https://github.com/nkouki98/SENG-513/blob/main/image.png
+[image]:https://github.com/nkouki98/SENG-513/blob/main/Spike2.png
