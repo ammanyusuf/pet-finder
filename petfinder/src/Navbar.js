@@ -9,6 +9,7 @@ import "./App.css";
 import "./navbar.css";
 import classnames from 'classnames';
 import { Avatar } from "@mui/material";
+import logo from './Spike3.png';
 
 export default function ButtonAppBar() {
   const auth = useContext(AuthContext);
@@ -16,6 +17,7 @@ export default function ButtonAppBar() {
     <Box >
       <AppBar position="static" sx={{backgroundColor: "#306BAC"}}>
         <Toolbar className={'sidebar'}>
+          <img src={logo} alt="logo" className="sidebar-img" min-width={"100px"}/>
           <Link to="/Home" >
             Feed
           </Link>
