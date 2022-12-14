@@ -117,6 +117,10 @@ const Profile = () => {
   const [invalidPassword, setInvalidPassword] = useState(false);
   const [invalidPasswordMsg, setInvalidPasswordMsg] = useState("");
 
+
+  const [invalidName, setInvalidName] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+
   const handlePasswordChange = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
@@ -158,6 +162,29 @@ const Profile = () => {
     }
   };
 
+  const validate = (data) => {
+    let validated = true;
+
+    if (data.name.lengh >= 20 || data.name.length === 0) {
+      setInvalidName(true);
+      validated = false;
+      console.log("invalid name");
+    } else {
+      setInvalidName(false);
+    }
+
+    const re = /.+\@.+\..+/;
+    if (data.email.length === 0 || !re.test(data.email)) {
+      setInvalidEmail(true);
+      validated = false;
+      console.log("invalid email");
+    } else {
+      setInvalidEmail(false);
+    }
+
+    return validated;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const data = {
@@ -166,14 +193,10 @@ const Profile = () => {
       email,
       dateOfBirth,
     };
-    if (
-      data.name == "" ||
-      data.username == "" ||
-      data.email == "" ||
-      data.dateOfBirth == ""
-    ) {
+    if (!validate(data)) {
       console.log("info not updated"); //add alert or red box on text fields
     } else {
+      console.log("nice! good job");
       try {
         let res = await fetch("http://localhost:4000/api/user/", {
           method: "PATCH",
@@ -361,6 +384,8 @@ const Profile = () => {
                 </Button>
                 <TextField
                   value={name}
+                  error={invalidName}
+                  helperText={invalidName && "Name is required (Max Char 20)"}
                   InputLabelProps={{ shrink: true }}
                   margin="normal"
                   required
@@ -374,6 +399,8 @@ const Profile = () => {
                 />
                 <TextField
                   value={email}
+                  error={invalidEmail}
+                  helperText={invalidEmail && "Email is required"}
                   margin="normal"
                   required
                   fullWidth
