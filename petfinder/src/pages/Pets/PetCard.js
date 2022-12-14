@@ -5,41 +5,42 @@ import CardHeader from "@mui/material/CardHeader";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
-import { set } from "react-hook-form";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
+
+const ListItem = styled("li")(({ theme }) => ({
+  margin: theme.spacing(0.5),
+}));
 
 export const PetCard = (props) => {
   console.log(props);
   const [index, setIndex] = useState(0);
   const adjustIndexRight = () => {
-    if (index == props.photos.length - 1) {
+    if (index === props.photos.length - 1) {
       setIndex(0);
     } else {
       setIndex((index) => index + 1);
     }
   };
   const adjustIndexLeft = () => {
-    if (index == 0) {
+    if (index === 0) {
       setIndex(props.photos.length - 1);
     } else {
       setIndex((index) => index - 1);
     }
   };
   return (
-    <Card variant="outlined" className = "postCard">
+    <Card variant="outlined" className="postCard">
       <CardHeader
-        // title={props.name}
-        title ={<Typography variant="body2" color="text.primary" className="petName">
+        title={
+          <Typography variant="body2" color="text.primary" className="petName">
             {props.name}
-          </Typography>}
-//         subheader={<Typography variant="body2" color="text.primary">
-//         Animal: {props.animal}
-//         Breed: {props.breed}
-//       </Typography> 
-// }
+          </Typography>
+        }
       />
       <CardMedia
         component="img"
@@ -49,9 +50,11 @@ export const PetCard = (props) => {
         sx={{ objectFit: "contain" }}
       />
 
-      <CardActions sx={{
-          justifyContent:"center"
-        }}>
+      <CardActions
+        sx={{
+          justifyContent: "center",
+        }}
+      >
         <IconButton edge="start" aria-label="delete" onClick={adjustIndexLeft}>
           <NavigateBeforeIcon />
         </IconButton>
@@ -66,11 +69,30 @@ export const PetCard = (props) => {
         <Typography className="petDescription">
           {`Breed: ${props.breed}`}
         </Typography>
-        <Typography variant="body2" color="text.primary" className="petDescription">
-          {props.tags.map((tag) => (
-            <span key={tag}>{tag}/</span>
-          ))}
-        </Typography>
+        <Paper
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            flexWrap: "wrap",
+            listStyle: "none",
+            backgroundColor: "transparent",
+            boxShadow: "none",
+            p: 0.5,
+            m: 0,
+          }}
+          component="ul"
+        >
+          <ListItem>
+            {props.tags.map((tag) => (
+              <Chip
+                key={tag}
+                label={tag}
+                sx={{ margin: 0.1 }}
+                color="primary"
+              />
+            ))}
+          </ListItem>
+        </Paper>
       </CardContent>
     </Card>
   );

@@ -12,13 +12,13 @@ body {
     overflow: auto;
     align-self: center;
     font-size: x-large;
-
+    display: flex;
+    justify-content: center;
 }
 
 .sidebar a {
     display: block;
     color: white;
-    width: 100%;
     height: 100%;
     padding: 1vw;
     text-decoration: none;
@@ -43,9 +43,11 @@ body {
 
 #sidebar-button {
     color: white;
-    font-weight: bold;
+    font-weight: 300;
     border-left: 2vw;
     border-right: 2vw;
+    font-size: small;
+    min-width: auto;
 }
 
 /* div.content {
@@ -54,7 +56,7 @@ body {
     height: 1000px;
 } */
 
-@media (max-width: 500px) {
+@media (max-width: 650px) {
     .sidebar {
         flex-direction: column;
         align-items: baseline;
@@ -66,4 +68,17 @@ body {
         padding-bottom: 1vh;
         padding-top: 1vh;
     }
+
+    .sidebar-img {
+        padding-top: 1%;
+        padding-bottom: 1%;
+    }
+}
+
+.sidebar-img {
+    min-width: 60px;
+    width: 5%;
+    height: 5%;
+    padding-top: 1%;
+    padding-bottom: 1%;
 }

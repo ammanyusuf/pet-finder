@@ -27,7 +27,6 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-
 export const AddPosts = () => {
   const auth = useContext(AuthContext);
   const [title, setTitle] = useState("");
@@ -50,17 +49,12 @@ export const AddPosts = () => {
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState(true);
 
-  const validate = data => {
-    // data.title == "" 
-    // || data.description == "" 
-    // || data.pet == "" 
-    // || data.dateLost == ""
-    // || data.location == ""
+  const validate = (data) => {
     let validated = true;
     if (data.title.length >= 100 || data.title.length === 0) {
       setInvalidTitle(true);
       validated = false;
-      console.log('invlaid title');
+      console.log("invlaid title");
     } else {
       setInvalidTitle(false);
     }
@@ -68,7 +62,7 @@ export const AddPosts = () => {
     if (data.description >= 4000 || data.description.length === 0) {
       setInvalidDescription(true);
       validated = false;
-      console.log('invalid description');
+      console.log("invalid description");
     } else {
       setInvalidDescription(false);
     }
@@ -76,31 +70,35 @@ export const AddPosts = () => {
     if (data.pet === "" || data.pet === "Select a Pet") {
       setInvalidPet(true);
       validated = false;
-      console.log('invalid pet');
+      console.log("invalid pet");
     } else {
       setInvalidPet(false);
     }
 
     const dateInput = new Date(data.dateLost);
     const now = new Date();
-    if ((dateInput > now) || (data.dateLost === "") || (data.dateLost === "Invalid date")) {
+    if (
+      dateInput > now ||
+      data.dateLost === "" ||
+      data.dateLost === "Invalid date"
+    ) {
       setInvalidDateLost(true);
       validated = false;
-      console.log('invalid date lolololol');
+      console.log("invalid date lolololol");
     } else {
       setInvalidDateLost(false);
     }
 
     if (data.location === "") {
       setInvalidLocation(true);
-      validated = false
-      console.log("invalid location")
+      validated = false;
+      console.log("invalid location");
     } else {
       setInvalidLocation(false);
     }
 
     return validated;
-  }
+  };
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -125,7 +123,6 @@ export const AddPosts = () => {
   };
 
   async function getUserPets() {
-
     await fetch("http://localhost:4000/api/user/myPets", {
       method: "GET",
       headers: {
@@ -167,7 +164,7 @@ export const AddPosts = () => {
       resolved: false,
     };
     console.log(validate(data));
-    if(validate(data)) {
+    if (validate(data)) {
       try {
         let res = await fetch("http://localhost:4000/api/posts", {
           method: "POST",
@@ -181,7 +178,7 @@ export const AddPosts = () => {
         if (res.status === 200) {
           handleClose();
           setOpenSnackBar(true);
-          setTimeout(() => window.location.reload(false), 3000);
+          setTimeout(() => window.location.reload(false), 500);
           console.log("Success");
         } else {
           console.log("Fail");
@@ -189,24 +186,23 @@ export const AddPosts = () => {
       } catch (err) {
         console.log(err);
       }
-
     } else {
-      console.log("What are you doing!") //add the react components to turn boxes red
-    };
-  }
+      console.log("What are you doing!"); //add the react components to turn boxes red
+    }
+  };
 
   const checkIfPets = () => {
     if (pets.length > 0) {
       return (
-        <Dialog 
-          open={open} 
+        <Dialog
+          open={open}
           onClose={handleClose}
-          sx={{ 
-            '& .MuiDialog-paper': { width: '80%', maxHeight: 435 },
+          sx={{
+            "& .MuiDialog-paper": { width: "80%", maxHeight: 435 },
           }}
         >
           <DialogTitle>Create Lost Pet Post</DialogTitle>
-          <DialogContent sx={{paddingTop: 0}}>
+          <DialogContent sx={{ paddingTop: 0 }}>
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField
@@ -219,26 +215,32 @@ export const AddPosts = () => {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </Grid>
-              <Grid item xs={6} >
+              <Grid item xs={6}>
                 <MobileDateTimePicker
                   label="Date/time pet was lost"
                   toolbarTitle="Date/time pet was lost"
                   value={mdateLost}
                   onChange={handleChange}
-                  renderInput={(params) => 
-                  <TextField 
-                    {...params} 
-                    error={invalidDateLost}
-                    helperText={invalidDateLost && "Date lost required (Before current time)"}
-                    fullWidth/>
-                  }
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={invalidDateLost}
+                      helperText={
+                        invalidDateLost &&
+                        "Date lost required (Before current time)"
+                      }
+                      fullWidth
+                    />
+                  )}
                 />
               </Grid>
               <Grid item xs={12}>
                 <TextField
                   fullWidth
                   error={invalidDescription}
-                  helperText={invalidDescription && "Description required (Max Char 4000)"}
+                  helperText={
+                    invalidDescription && "Description required (Max Char 4000)"
+                  }
                   type="text"
                   value={description}
                   placeholder="Description"
@@ -260,17 +262,17 @@ export const AddPosts = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <Select 
+                <Select
                   fullWidth
                   error={invalidPet}
                   value={pet}
                   placeholder="Select a Pet"
-                  onChange={(e) => {chosenPet(e.target.value)}}
+                  onChange={(e) => {
+                    chosenPet(e.target.value);
+                  }}
                 >
                   <MenuItem value="Select a Pet">
-                    <div style={{opacity: 0.42}}> 
-                      -- Select a pet --
-                    </div>
+                    <div style={{ opacity: 0.42 }}>-- Select a pet --</div>
                   </MenuItem>
                   {pets.map((pet) => (
                     <MenuItem key={pet._id} value={pet._id}>
@@ -278,7 +280,9 @@ export const AddPosts = () => {
                     </MenuItem>
                   ))}
                 </Select>
-                {invalidPet && <FormHelperText error>Please select a pet</FormHelperText>}
+                {invalidPet && (
+                  <FormHelperText error>Please select a pet</FormHelperText>
+                )}
               </Grid>
             </Grid>
           </DialogContent>
@@ -296,7 +300,7 @@ export const AddPosts = () => {
             <DialogContentText>
               No pets were found on your account. Please create a pet first.
             </DialogContentText>
-            <Link to="/PetFeed">Goto Pet Page</Link>
+            <Link to="/PetFeed">Go to Pet Page</Link>
           </DialogContent>
           <DialogActions>
             <Button onClick={handleClose}>Cancel</Button>
@@ -310,14 +314,14 @@ export const AddPosts = () => {
     <React.Fragment>
       <LocalizationProvider dateAdapter={AdapterMoment}>
         <div id="create-post-button-container">
-          <Button 
-          variant="outlined" 
-          onClick={handleClickOpen} 
-          sx={{
-            color: "green",
-            fontWeight: "bold",
-            backgroundColor: "lightgreen",
-          }}
+          <Button
+            variant="outlined"
+            onClick={handleClickOpen}
+            sx={{
+              color: "green",
+              fontWeight: "bold",
+              backgroundColor: "lightgreen",
+            }}
           >
             Create a new post
           </Button>
@@ -334,7 +338,7 @@ export const AddPosts = () => {
             onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
             severity="success"
           >
-            Added post! Page will refresh shortly. 
+            Added post! Page will refresh shortly.
           </Alert>
         </Snackbar>
       )}

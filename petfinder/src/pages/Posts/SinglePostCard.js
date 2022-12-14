@@ -7,7 +7,7 @@ import CardContent from "@mui/material/CardContent";
 import CardActions from "@mui/material/CardActions";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
-import IconButton, { IconButtonProps } from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
@@ -15,8 +15,13 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { ViewComment } from "../Comments/ViewComment";
 import { AuthContext } from "../../context/auth-context";
-import moment from "moment";
+import Chip from "@mui/material/Chip";
+import Paper from "@mui/material/Paper";
 import PostComment from "../Comments/PostComment";
+
+const ListItem = styled("li")(({ theme }) => ({
+  margin: theme.spacing(0.5),
+}));
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -34,13 +39,7 @@ export const SinglePostCard = (props) => {
     } else {
       setResolvedText("Post has not been resolved");
     }
-  }, []);
-
-  const sortTime = (time) => {
-    time.sort(function (a, b) {
-      return a.up - Date.parse(a.dateLost);
-    });
-  };
+  }, [props.resolved]);
 
   const sortByUpvotes = (comments) => {
     comments.sort(function (a, b) {
@@ -88,7 +87,7 @@ export const SinglePostCard = (props) => {
           "x-access-token": auth.token,
         },
       });
-      let resJson = await res.json();
+      await res.json();
       if (res.status === 200) {
         setOpenSnackBar(true);
         setResolvedText("Post has been resolved");
@@ -103,10 +102,44 @@ export const SinglePostCard = (props) => {
 
   return (
     <React.Fragment>
-      <Card variant="outlined" className = "postCard">
+      <Card variant="outlined" className="postCard">
         <CardHeader
           avatar={<Avatar src={props.author.picture}></Avatar>}
-          title={`${props.title}   -  ${resolvedText}`}
+          title={
+            <>
+              <Typography
+                variant="body2"
+                color="text.primary"
+                className="postTitle"
+              >
+                {props.title}
+              </Typography>
+              {resolvedText === "Post has been resolved" && (
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  className="postResolved"
+                  sx={{
+                    color: "green",
+                  }}
+                >
+                  Pet found :D
+                </Typography>
+              )}
+              {resolvedText === "Post has not been resolved" && (
+                <Typography
+                  variant="body2"
+                  color="text.primary"
+                  className="postResolved"
+                  sx={{
+                    color: "red",
+                  }}
+                >
+                  Pet still lost :\
+                </Typography>
+              )}
+            </>
+          }
           subheader={`Author: ${props.author.username}`}
         />
         <CardMedia
@@ -116,9 +149,11 @@ export const SinglePostCard = (props) => {
           alt="Missing"
           sx={{ objectFit: "contain" }}
         />
-        <CardActions sx={{
-          justifyContent:"center"
-        }}>
+        <CardActions
+          sx={{
+            justifyContent: "center",
+          }}
+        >
           <IconButton
             edge="start"
             aria-label="delete"
@@ -131,31 +166,77 @@ export const SinglePostCard = (props) => {
           </IconButton>
         </CardActions>
         <CardContent>
-        <Typography variant="body2" color="text.primary" className="descriptionLabel">
+          <Typography
+            variant="body2"
+            color="text.primary"
+            className="petDescription"
+          >
+            Animal: {props.pet.animal}
+          </Typography>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            className="petDescription"
+          >
+            Breed: {props.pet.breed}
+          </Typography>
+          <Paper
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+              listStyle: "none",
+              backgroundColor: "transparent",
+              boxShadow: "none",
+              p: 0.5,
+              m: 0,
+            }}
+            component="ul"
+          >
+            <ListItem>
+              {props.pet.tags.map((tag) => (
+                <Chip
+                  key={tag}
+                  label={tag}
+                  sx={{ margin: 0.1 }}
+                  color="primary"
+                />
+              ))}
+            </ListItem>
+          </Paper>
+          <Typography
+            variant="body2"
+            color="text.primary"
+            className="descriptionLabel"
+          >
             Description
           </Typography>
-          <Typography variant="body2" color="text.primary" className="description">
+          <Typography
+            variant="body2"
+            color="text.primary"
+            className="description"
+          >
             {props.description}
           </Typography>
         </CardContent>
         {checkIfCanResolve() && (
           <div id="view-post-button-container">
-          <Button
-            size="small"
-            variant="contained"
-            color="primary"
-            onMouseDown={(event) => event.stopPropagation()}
-            onClick={handleClick}
-            sx={{
-              marginBottom: 2
-            }}
-          >
-            Resolve post
-          </Button>
+            <Button
+              size="small"
+              variant="contained"
+              color="primary"
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={handleClick}
+              sx={{
+                marginBottom: 2,
+              }}
+            >
+              Resolve post
+            </Button>
           </div>
         )}
 
-        <PostComment  post_id={props._id} />
+        <PostComment post_id={props._id} />
         {sortByUpvotes(props.comments)}
         {props.comments.map((comment) => (
           <div key={comment._id}>

@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import axios from "axios";
-import { setAuthToken } from "../context/setAuthToken";
 import { AuthContext } from "../context/auth-context";
 
 import Avatar from "@mui/material/Avatar";
@@ -22,16 +21,12 @@ import jwt_decode from "jwt-decode";
 function LoginPage() {
   const auth = useContext(AuthContext);
 
-  // let [user, setUser] = useState(()=> localStorage.getItem('authTokens') ? jwt_decode(localStorage.getItem('authTokens')) : null)
-
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // const form = e.target;
     const data = new FormData(e.target);
-    //reqres registered sample user
     console.log({
       username: data.get("username"),
       password: data.get("password"),
@@ -39,41 +34,37 @@ function LoginPage() {
     const loginInfo = {
       username: data.get("username"),
       password: data.get("password"),
-      // username: form[0].value,
-      // password: form[1].value
     };
 
     axios
       .post("http://localhost:4000/api/user/login", loginInfo)
       .then((response) => {
         //get token from response
-        if(response.data.login)
-        {
+        if (response.data.login) {
           const token = response.data.token;
           const username = response.data.username;
           const id = response.data.userId;
           auth.login(token, username, id);
-        }
-        else
-        {
-
+        } else {
           setError(true);
-          setErrorMsg('Username or password is incorrect');
-          console.log(response.data.message)
-          const loginIncorrect = <div> YOU must login correctly! </div> //add something like this in
+          setErrorMsg("Username or password is incorrect");
+          console.log(response.data.message);
+          const loginIncorrect = <div> YOU must login correctly! </div>; //add something like this in
         }
       })
-      .catch((err) => {console.log(err)});
+      .catch((err) => {
+        console.log(err);
+      });
   }
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#306BAC'
+        main: "#306BAC",
       },
       secondary: {
-        main: '#306BAC'
+        main: "#306BAC",
       },
-    }
+    },
   });
   return (
     <ThemeProvider theme={theme}>
@@ -122,7 +113,7 @@ function LoginPage() {
                 required
                 fullWidth
                 id="username"
-                label="username"
+                label="Username"
                 name="username"
                 autoComplete="username"
                 autoFocus
@@ -157,7 +148,6 @@ function LoginPage() {
                   </Link>
                 </Grid>
               </Grid>
-              {/* <Copyright sx={{ mt: 5 }} /> */}
             </Box>
           </Box>
         </Grid>

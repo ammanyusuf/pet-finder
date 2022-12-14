@@ -11,24 +11,22 @@ const getPosts = async (req, res) => {
   const petPosts = await Posts.Post.find({})
     .sort({ createdAt: -1 })
     .populate("comments")
-    .populate("author");
-
+    .populate("author")
+    .populate("pet");
   res.status(200).json(petPosts);
-
-  //res.status(200).json(hello)
 };
 
 const getPost = async (req, res) => {
   const { id } = req.params;
-  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
-    if(count>0){
+  Posts.Post.countDocuments({ _id: id }, async function (err, count) {
+    if (count > 0) {
+      const post = await Posts.Post.findById({ _id: id })
+        .populate({ path: "comments", populate: "author" })
+        .populate("author")
+        .populate("pet");
 
-  const post = await Posts.Post.findById({ _id: id })
-    .populate({ path: "comments", populate: "author" })
-    .populate("author");
-
-  res.status(200).json(post);
-    }else{
+      res.status(200).json(post);
+    } else {
       return res.status(400).json({ error: "No such post" });
     }
   });
@@ -69,43 +67,37 @@ const makePost = async (req, res) => {
     console.log(error);
     res.status(400).json({ error: error.message });
   }
-
-  // const {username, pet, PID, description, location, picture} = req.body
-  // console.log(req.body)
-  // res.status(200).json(req.body)
 };
 
 const updatePost = async (req, res) => {
   //post id will be appended to params when clicked (button press)
   const { id } = req.params;
 
-  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
-    if(count>0){
-  const postCheck = await Posts.Post.findOne({ _id: id });
+  Posts.Post.countDocuments({ _id: id }, async function (err, count) {
+    if (count > 0) {
+      const postCheck = await Posts.Post.findOne({ _id: id });
 
-  if (postCheck.author != req.user.id) {
-    return res.status(400).json({ error: "Not Your Post to update playyya" });
-  }
+      if (postCheck.author != req.user.id) {
+        return res
+          .status(400)
+          .json({ error: "Not Your Post to update playyya" });
+      }
 
-  // if (!mongoose.Types.ObjectId.isValid(id)) {
-  //     return res.status(400).json({error: 'No such post'})
-  // }
+      const postToUpdate = await Posts.Post.findOneAndUpdate(
+        { _id: id },
+        {
+          ...req.body,
+        }
+      );
 
-  const postToUpdate = await Posts.Post.findOneAndUpdate(
-    { _id: id },
-    {
-      ...req.body,
+      if (!postToUpdate) {
+        return res.status(400).json({ error: "No such post" });
+      }
+
+      res.status(200).json(postToUpdate);
+    } else {
+      return res.status(400).json({ error: "No such post" });
     }
-  );
-
-  if (!postToUpdate) {
-    return res.status(400).json({ error: "No such post" });
-  }
-
-  res.status(200).json(postToUpdate);
-}else{
-    return res.status(400).json({ error: "No such post" });
-}
   });
 
   //console.log("We are updating this post to resolve or comment", id)
@@ -117,83 +109,86 @@ const searchPost = async (req, res) => {
   //populated fields will be used to search and filter db results
   //const { resolved, animal, breed, date, tag, location } = req.body;
 
-
-  
   const searchQuery = {
     // resolved: req.body.resolved,
     // Location: req.body.Location,
     animal: req.body.animal,
     breed: req.body.breed,
     name: req.body.name,
-    tags: req.body.tags
+    tags: req.body.tags,
     // tags: req.body.tags
   };
   // console.log(searchQuery.tags);
-  searchQuery.tags = searchQuery.tags.split(',');
-  // $all: searchQuery.tags
-  // console.log(searchQuery.tags)
-  // console.log(JSON.stringif(req.body));
-  if (searchQuery.breed == ''){
-    searchQuery.breed =  /./
-  
-  }else{
-    breed =  req.body.breed
+  searchQuery.tags = searchQuery.tags.split(",");
+  if (searchQuery.breed == "") {
+    searchQuery.breed = /./;
+  } else {
+    breed = req.body.breed;
   }
 
-  
   let post2;
-  console.log(searchQuery.tags)
-  
+  console.log(searchQuery.tags);
+
   // const tagArray = Array.from(searchQuery.tags);
-  for(let j = 0; j < searchQuery.tags.length; j++)
-  {
-    searchQuery.tags[j] = searchQuery.tags[j].replace(/\s/g, '');
-    console.log(searchQuery.tags[j])
+  for (let j = 0; j < searchQuery.tags.length; j++) {
+    searchQuery.tags[j] = searchQuery.tags[j].replace(/\s/g, "");
+    console.log(searchQuery.tags[j]);
 
-  // }
+    // }
   }
-  const tagArray = JSON.stringify(searchQuery.tags)
-  console.log(tagArray)
+  const tagArray = JSON.stringify(searchQuery.tags);
+  console.log(tagArray);
 
-  if(searchQuery.tags[0] === '')
-  {
-    post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}}}).populate({ path: "comments", populate: "author" }).populate('author')
-                                                  .then((orders) => orders.filter((order) => order.pet != null))
-  }
-  else
-  {
-    post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}, tags: {$in: searchQuery.tags}}}).populate({ path: "comments", populate: "author" }).populate('author')
-                                                   .then((orders) => orders.filter((order) => order.pet != null))
-  //   post2 = await Posts.Post.find(searchQuery).populate({path : 'pet', match: {animal: {$regex: searchQuery.animal}, breed:{$regex: searchQuery.breed}, name: {$regex: searchQuery.name}, tags: {$in: tagArray}
-  // }}).populate({ path: "comments", populate: "author" }).populate('author')
-  //                                                 .then((orders) => orders.filter((order) => order.pet != null))
-                                                
+  if (searchQuery.tags[0] === "") {
+    post2 = await Posts.Post.find(searchQuery)
+      .populate({
+        path: "pet",
+        match: {
+          animal: { $regex: searchQuery.animal },
+          breed: { $regex: searchQuery.breed },
+          name: { $regex: searchQuery.name },
+        },
+      })
+      .populate({ path: "comments", populate: "author" })
+      .populate("author")
+      .then((orders) => orders.filter((order) => order.pet != null));
+  } else {
+    post2 = await Posts.Post.find(searchQuery)
+      .populate({
+        path: "pet",
+        match: {
+          animal: { $regex: searchQuery.animal },
+          breed: { $regex: searchQuery.breed },
+          name: { $regex: searchQuery.name },
+          tags: { $in: searchQuery.tags },
+        },
+      })
+      .populate({ path: "comments", populate: "author" })
+      .populate("author")
+      .then((orders) => orders.filter((order) => order.pet != null));
   }
   res.status(200).json(post2);
 };
 
 const deletePost = async (req, res) => {
   //when delete button pressed, append id of post to url so it can be used to delete from db
-  Posts.Post.countDocuments({_id: id}, async function (err, count){ 
-  if(count>0){
-  const { id } = req.params;
+  Posts.Post.countDocuments({ _id: id }, async function (err, count) {
+    if (count > 0) {
+      const { id } = req.params;
 
-  const person = await Posts.Post.findOne({ _id: id });
+      const person = await Posts.Post.findOne({ _id: id });
 
-  if (person.author != req.user.id) {
-    return res.status(400).json({ error: "Not Your Post" });
-  }
+      if (person.author != req.user.id) {
+        return res.status(400).json({ error: "Not Your Post" });
+      }
 
-  const post = await Posts.Post.findOneAndDelete({ _id: id });
+      const post = await Posts.Post.findOneAndDelete({ _id: id });
 
-  res.status(200).json(post);
-  }else{
-    return res.status(400).json({ error: "No such post" });
-  }
-});
-
-  // console.log("We are deleting your post " + id + ". One moment please")
-  // res.send("We have deleted your doge post dog, happy pet finding " + id + "!")
+      res.status(200).json(post);
+    } else {
+      return res.status(400).json({ error: "No such post" });
+    }
+  });
 };
 
 const updateComment = async (req, res) => {
@@ -201,86 +196,72 @@ const updateComment = async (req, res) => {
   //Do this when user clicks a update button and this api function is called
 
   const { id, cid } = req.params;
-  Posts.Comment.countDocuments({_id: cid}, async function (err, count){ 
-  if(count>0){
+  Posts.Comment.countDocuments({ _id: cid }, async function (err, count) {
+    if (count > 0) {
+      const { upvote } = req.body;
 
-  const { upvote } = req.body;
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return res.status(400).json({ error: "No such post" });
+      }
 
-  if (!mongoose.Types.ObjectId.isValid(id)) {
-    return res.status(400).json({ error: "No such post" });
-  }
+      // let comment = '';
 
-  // let comment = '';
-
-  if (upvote) {
-    const comment = await Posts.Comment.findOneAndUpdate(
-      { _id: cid },
-      { $inc: { upvotes: 1 } },
-      { new: true }
-    );
-    res.status(200).json(comment);
-  } else {
-    console.log("negative");
-    const comment = await Posts.Comment.findOneAndUpdate(
-      { _id: cid },
-      { $inc: { upvotes: -1 } },
-      { new: true }
-    );
-    res.status(200).json(comment);
-  }
-}else{
-  return res.status(400).json({ error: "No such Comment" });
-}
+      if (upvote) {
+        const comment = await Posts.Comment.findOneAndUpdate(
+          { _id: cid },
+          { $inc: { upvotes: 1 } },
+          { new: true }
+        );
+        res.status(200).json(comment);
+      } else {
+        console.log("negative");
+        const comment = await Posts.Comment.findOneAndUpdate(
+          { _id: cid },
+          { $inc: { upvotes: -1 } },
+          { new: true }
+        );
+        res.status(200).json(comment);
+      }
+    } else {
+      return res.status(400).json({ error: "No such Comment" });
+    }
   });
-
-  // res.status(200).json(comment)
-
-  //console.log("We are updating this post to resolve or comment", id)
-  //res.send("We have updated your post, happy pet finding " + id + "!")
 };
 
 const deleteComment = async (req, res) => {
   //in frontend the id of the post and comment will be appended to the url. Do this when user clicks a delete button and this is called
   const { id, cid } = req.params;
 
-
-  Posts.Comment.countDocuments({_id: cid}, async function (err, count){ 
-  if(count>0){
+  Posts.Comment.countDocuments({ _id: cid }, async function (err, count) {
+    if (count > 0) {
       const commentCheck = await Posts.Comment.findById({ _id: cid });
       console.log(commentCheck);
-    
+
       if (commentCheck.author != req.user.id) {
         res.send("what you doing dawg, this ain't your comment to delete");
       }
-    
+
       const comment = await Posts.Comment.findOneAndDelete({ _id: cid });
-    
+
       const post = await Posts.Post.findById({ _id: id });
-    
+
       for (var i = 0; i < post.comments.length; i++) {
         temp = JSON.stringify(post.comments[i]);
-    
+
         if (temp == `"${cid}"`) {
           console.log("I'm here. Delete me");
-    
+
           post.comments.splice(i, 1);
         }
       }
-      // const index = post.comments.indexOf(`new ObjectId("${cid}")`);
-      // if (index > -1) { // only splice array when item is found
-      //     post.comments.splice(index, 1); // 2nd parameter means remove one item only
-      // }
+
       await post.save();
       res.status(200).json(post);
       //res.status(200).json(comment)
-   }else{
-    return res.status(400).json({ error: "No such Comment" });
-  }
-}); 
-  
-
-  // console.log("We are deleting your post " + id + ". One moment please")
-  // res.send("We have deleted your doge post dog, happy pet finding " + id + "!")
+    } else {
+      return res.status(400).json({ error: "No such Comment" });
+    }
+  });
 };
 
 const makeComment = async (req, res) => {
@@ -308,16 +289,6 @@ const makeComment = async (req, res) => {
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
-
-  //     const postToUpdate = await Posts.Post.findOneAndUpdate({_id: postId}, {
-  //         "comments" : newComment._id
-  //    })
-
-  //    if (!postToUpdate) {
-  //        return res.status(400).json({error: 'No such workout'})
-  //    }
-
-  //    res.status(200).json(postToUpdate)
 };
 
 //exports

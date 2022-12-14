@@ -50,7 +50,7 @@
   font-weight: bold !important;
 }
 
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 650px) {
   .postCard {
     margin-left: 4%;
     margin-right: 4%;
@@ -61,6 +61,24 @@
     padding-left: 4% !important;
     padding-right: 4% !important;
     padding-top: 1% !important;
+  }
+
+  .filterGroup button{
+    margin-left: 40% !important;
+  }
+
+  .backButton{
+    margin-left: 0% !important;
+  }
+
+  .petDialog {
+    flex-direction: column !important;
+  }
+}
+
+@media screen and (max-width: 1010px) {
+  .filterGroup button{
+    margin-left: 50% !important;
   }
 
   .backButton{
@@ -129,8 +147,7 @@
   animation: spin 2s linear infinite;
   display: flex;
   justify-content: center;
-  margin-left: 45%;
-  margin-right: 45%;
+  margin: auto;
 }
 
 @keyframes spin {
@@ -168,4 +185,11 @@
   padding-left: 30%;
   padding-right: 30%;
   padding-top: 1%;
+}
+
+.filterGroup button{
+  /* padding-left: 30%; */
+  /* padding-right: 30%; */
+  padding-top: 1%;
+  /*margin-left: 90%;*/
 }

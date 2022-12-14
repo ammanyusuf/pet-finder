@@ -1,7 +1,5 @@
 import React, { useContext } from "react";
 import axios from "axios";
-// import { setAuthToken } from "../context/setAuthToken";
-// import { AuthContext } from "../context/auth-context";
 import { AuthContext } from "../../context/auth-context";
 import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
@@ -9,19 +7,19 @@ import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { MobileDatePicker } from '@mui/x-date-pickers/MobileDatePicker';
+import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Link from "@mui/material/Link";
 import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
-import AssignmentIcon from '@mui/icons-material/Assignment';
+import AssignmentIcon from "@mui/icons-material/Assignment";
 import Typography from "@mui/material/Typography";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { createContext, useState, useEffect } from "react";
 import jwt_decode from "jwt-decode";
-import {AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 // import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import moment, { invalid } from "moment";
@@ -30,7 +28,7 @@ function Register() {
   const auth = useContext(AuthContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-//   const [dateLost, setDate] = useState(moment());
+  //   const [dateLost, setDate] = useState(moment());
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState(moment());
@@ -50,13 +48,13 @@ function Register() {
 
   const [passwordErrorMsg, setPasswordErrorMsg] = useState("");
 
-  const validate = data => {
+  const validate = (data) => {
     let validated = true;
 
     if (data.name.lengh >= 20 || data.name.length === 0) {
       setInvalidName(true);
       validated = false;
-      console.log('invalid name');
+      console.log("invalid name");
     } else {
       setInvalidName(false);
     }
@@ -64,97 +62,101 @@ function Register() {
     if (data.username.length >= 20 || data.username.length === 0) {
       setInvalidUserName(true);
       validated = false;
-      console.log('invalid username');
+      console.log("invalid username");
     } else {
       setInvalidUserName(false);
     }
 
     if (data.password.length === 0) {
       setInvalidPassword(true);
-      setPasswordErrorMsg("Password length must be greater than 0")
+      setPasswordErrorMsg("Password length must be greater than 0");
       validated = false;
-      console.log('invalid password');
+      console.log("invalid password");
     } else if (data.password !== data.confirmPassword) {
       setInvalidPassword(true);
       setPasswordErrorMsg("Password's need to match");
       validated = false;
-      console.log('passwords need to match');
+      console.log("passwords need to match");
     } else {
       setInvalidPassword(false);
       setPasswordErrorMsg("");
     }
 
-    if (data.email.length === 0) {
+    const re = /.+\@.+\..+/;
+    if (data.email.length === 0 || !re.test(data.email)) {
       setInvalidEmail(true);
       validated = false;
-      console.log('invalid email');
+      console.log("invalid email");
     } else {
       setInvalidEmail(false);
     }
 
     const dateInput = new Date(data.dateOfBirth);
     const now = new Date();
-    if ((dateInput > now) || (data.dateOfBirth === "") || (data.dateOfBirth === "Invalid date")) {
+    if (
+      dateInput > now ||
+      data.dateOfBirth === "" ||
+      data.dateOfBirth === "Invalid date"
+    ) {
       setInvaliDateofBirth(true);
       validated = false;
-      console.log('invalid date lolololol');
+      console.log("invalid date lolololol");
     } else {
       setInvaliDateofBirth(false);
     }
 
     return validated;
-  }
+  };
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
+
     const data = {
-        name,
-        username,
-        password,
-        email,
-        dateOfBirth,
-        confirmPassword
+      name,
+      username,
+      password,
+      email,
+      dateOfBirth,
+      confirmPassword,
     };
-    if(!validate(data))
-    {
-      console.log('wrong buddy')
-    }
-    else
-    {
+    if (!validate(data)) {
+      console.log("wrong buddy");
+    } else {
       try {
         let res = await fetch("http://localhost:4000/api/user/register", {
           method: "POST",
           body: JSON.stringify(data),
           headers: {
             "Content-Type": "application/json",
-          //   "x-access-token": auth.token,
+            //   "x-access-token": auth.token,
           },
         });
         let resJson = await res.json();
-        if (res.status === 200) {
+
+        if (resJson.validReg) {
           console.log("Successful Register");
-          window.location.href = '/Login';
+          window.location.href = "/Login";
           //handleClose();
           //window.location.reload(true);
           //auth.login(token, username, id);
         } else {
           console.log("Fail");
+          setInvalidUserName(true);
         }
       } catch (err) {
         console.log(err);
       }
-    };
+    }
   }
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#306BAC'
+        main: "#306BAC",
       },
       secondary: {
-        main: '#306BAC'
+        main: "#306BAC",
       },
-    }
+    },
   });
   return (
     <ThemeProvider theme={theme}>
@@ -186,123 +188,121 @@ function Register() {
               alignItems: "center",
             }}
           >
-              <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
-                <AssignmentIcon/>
-              </Avatar>
-              <Typography component="h1" variant="h5">
-                Sign Up
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={(event) => handleSubmit(event)}
-                sx={{ mt: 1 }}
+            <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
+              <AssignmentIcon />
+            </Avatar>
+            <Typography component="h1" variant="h5">
+              Sign Up
+            </Typography>
+            <Box
+              component="form"
+              noValidate
+              onSubmit={(event) => handleSubmit(event)}
+              sx={{ mt: 1 }}
+            >
+              <TextField
+                margin="normal"
+                error={invalidName}
+                helperText={invalidName && "Name is required (Max Char 20)"}
+                required
+                fullWidth
+                id="name"
+                label="Name"
+                name="name"
+                autoComplete="First & Last Name"
+                autoFocus
+                onChange={(e) => setName(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                error={invalidEmail}
+                helperText={invalidEmail && "Email is required"}
+                required
+                fullWidth
+                id="email"
+                label="Email"
+                name="email"
+                autoComplete="Your Email"
+                autoFocus
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <LocalizationProvider dateAdapter={AdapterMoment} margin="normal">
+                <MobileDatePicker
+                  margin="normal"
+                  label="Date Of Birth"
+                  value={dateOfBirth}
+                  onChange={handleChange}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      error={invalidDateofBirth}
+                      helperText={invalidDateofBirth && "Invalid date of birth"}
+                    />
+                  )}
+                />
+              </LocalizationProvider>
+              <TextField
+                margin="normal"
+                error={invalidUserName}
+                helperText={
+                  invalidUserName && "Username is required (Max Char 20)"
+                }
+                required
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="Enter Username"
+                autoFocus
+                onChange={(e) => setUsername(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                error={invalidPassword}
+                helperText={invalidPassword && passwordErrorMsg}
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="Enter Password"
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <TextField
+                margin="normal"
+                error={invalidPassword}
+                helperText={invalidPassword && passwordErrorMsg}
+                required
+                fullWidth
+                name="confimPassword"
+                label="Confirm Password"
+                type="password"
+                id="confimPassword"
+                autoComplete="Re-enter Password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
               >
-                <TextField
-                    margin="normal"
-                    error={invalidName}
-                    helperText={invalidName && "Name is required (Max Char 20)"}
-                    required
-                    fullWidth
-                    id="name"
-                    label="Name"
-                    name="name"
-                    autoComplete="First & Last Name"
-                    autoFocus
-                    onChange={(e) => setName(e.target.value)}
-                />
-                <TextField
-                    margin="normal"
-                    error={invalidEmail}
-                    helperText={invalidEmail && "Email is required"}
-                    required
-                    fullWidth
-                    id="email"
-                    label="Email"
-                    name="email"
-                    autoComplete="Your Email"
-                    autoFocus
-                    onChange={(e) => setEmail(e.target.value)}
-                />
-                <LocalizationProvider dateAdapter={AdapterMoment} margin="normal">
-                  <MobileDatePicker
-                    margin="normal"
-                    label="Date Of Birth"
-                    value={dateOfBirth}
-                    onChange={handleChange}
-                    renderInput={(params) => 
-                      <TextField 
-                        {...params} 
-                        error={invalidDateofBirth}
-                        helperText={invalidDateofBirth && "Invalid date of birth"}  
-                      />
-                    }
-                  />
-                </LocalizationProvider>
-                <TextField
-                  margin="normal"
-                  error={invalidUserName}
-                  helperText={invalidUserName && "Username is required (Max Char 20)"}
-                  required
-                  fullWidth
-                  id="username"
-                  label="username"
-                  name="username"
-                  autoComplete="Enter Username"
-                  autoFocus
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-                <TextField
-                  margin="normal"
-                  error={invalidPassword}
-                  helperText={invalidPassword && passwordErrorMsg}
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="Enter Password"
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                <TextField
-                  margin="normal"
-                  error={invalidPassword}
-                  helperText={invalidPassword && passwordErrorMsg}
-                  required
-                  fullWidth
-                  name="confimPassword"
-                  label="Confirm Password"
-                  type="password"
-                  id="confimPassword"
-                  autoComplete="Re-enter Password"
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign Up
-                </Button>
-                <Grid container>
-                  <Grid item>
-                    <Link href="/Login" variant="body2">
-                      {"Already have an account? Log in!"}
-                    </Link>
-                  </Grid>
+                Sign Up
+              </Button>
+              <Grid container>
+                <Grid item>
+                  <Link href="/Login" variant="body2">
+                    {"Already have an account? Log in!"}
+                  </Link>
                 </Grid>
+              </Grid>
             </Box>
           </Box>
         </Grid>
       </Grid>
     </ThemeProvider>
   );
-
- 
 }
-
-
 
 export default Register;

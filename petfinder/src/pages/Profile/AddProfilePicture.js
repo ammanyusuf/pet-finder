@@ -15,18 +15,15 @@ import MuiAlert from "@mui/material/Alert";
 import { WithContext as ReactTags } from "react-tag-input";
 import { AuthContext } from "../../context/auth-context";
 
-
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-
 export const AddProfilePicture = () => {
   const auth = useContext(AuthContext);
-  const [photo, setSelectedImages] = useState('');
+  const [photo, setSelectedImages] = useState("");
   const [open, setOpen] = useState(false);
   const [openSnackBar, setOpenSnackBar] = useState(false);
-
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -34,7 +31,7 @@ export const AddProfilePicture = () => {
 
   const handleClose = () => {
     setOpen(false);
-    setSelectedImages('');
+    setSelectedImages("");
   };
 
   const handleSubmit = async (e) => {
@@ -44,35 +41,33 @@ export const AddProfilePicture = () => {
     data.append("image", images);
     //const data = {name, breed, animal, tags, image}
     console.log(data.get(images));
-    // if(data.get(images) == null)
-    // {
-    //   console;e.log("No")
-    // }
-    // else
-    // {
-      try {
-        let res = await fetch("http://localhost:4000/api/user/addProfilePicture", {
+    try {
+      let res = await fetch(
+        "http://localhost:4000/api/user/addProfilePicture",
+        {
           method: "PATCH",
           body: data,
           headers: {
             // 'Content-Type': 'appli/form-data',
             "x-access-token": auth.token,
           },
-        });
-        let resJson = await res.json();
-        if (res.status === 200) {
-          setOpenSnackBar(true);
-          handleClose();
-          setTimeout(() => {window.location.reload(false)}, 3000);
-          console.log("Success");
-        } else {
-          console.log("Fail");
         }
-      } catch (err) {
-        console.log(err);
+      );
+      let resJson = await res.json();
+      if (res.status === 200) {
+        setOpenSnackBar(true);
+        handleClose();
+        setTimeout(() => {
+          window.location.reload(false);
+        }, 500);
+        console.log("Success");
+      } else {
+        console.log("Fail");
       }
-    };
-  
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -82,7 +77,6 @@ export const AddProfilePicture = () => {
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a Profile Picture</DialogTitle>
         <DialogContent>
-          
           {/* {images.map((image) => (
             <div key={image}>
               <img
@@ -93,7 +87,7 @@ export const AddProfilePicture = () => {
               <br />
             </div>
           ))} */}
-          
+
           <DialogContentText>Add Profile Picture</DialogContentText>
           <input
             type="file"
@@ -120,7 +114,7 @@ export const AddProfilePicture = () => {
             onClose={() => setOpenSnackBar((prevCheck) => !prevCheck)}
             severity="success"
           >
-            Updated profile picture! Page will refresh shortly. 
+            Updated profile picture! Page will refresh shortly.
           </Alert>
         </Snackbar>
       )}

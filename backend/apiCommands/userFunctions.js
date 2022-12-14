@@ -8,9 +8,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const { json } = require("body-parser");
 const { Promise } = require("mongodb");
-// const { cloudinary_js_config } = require("../utils/cloudinary.config");
-
-// mongoose.set("useCreateIndex", true, "useFindandModify", false);
 
 //User registration
 const registerUser = async (req, res) => {
@@ -26,9 +23,12 @@ const registerUser = async (req, res) => {
   const emailInDb = await db.User.findOne({ email: email });
   dateOfBirth instanceof Date;
 
+  const re = /.+\@.+\..+/;
+
   //email and username must be unique
-  if (userInDb != null && emailInDb != null) {
-    res.send("User already in db, too slow, slow poke");
+  if (userInDb != null || emailInDb != null || !re.test(email)) {
+    res.json({ validReg: false });
+    console.log("Caught");
   } else {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
 
@@ -44,7 +44,8 @@ const registerUser = async (req, res) => {
     });
 
     newUser.save();
-    res.json(newUser);
+    // res.json(newUser);
+    res.json({ validReg: true });
   }
 };
 
@@ -53,56 +54,47 @@ const registerUser = async (req, res) => {
 const loginUser = async (req, res) => {
   //use username and password to login
   const { username, password } = req.body;
-  
 
   db.User.findOne({ username: username }, function (err, person) {
     if (err) {
       res.send("Invalid login, get your info correct next time");
     } else {
-        if(person == null)
-        {
-          res.json({
-            message: "Incorrect Username",
-            login: false
-          });
-        }
-        else
-        {
-
-          console.log(person.password, password);
-          bcrypt.compare(password, person.password).then((isCorrect) => {
-            console.log(isCorrect);
-            if (isCorrect) {
-              const user = {
-                id: person._id,
-                username: person.username,
-              };
-              jwt.sign(
-                user,
-                process.env.JWT_SECRET,
-                { expiresIn: 86400 },
-                (err, token) => {
-                  if (err) {
-                    console.log("oops!", err);
-                    console.log(JSON.stringify(user));
-                    return res.json({ message: err });
-                  }
-                  return res.json({
-                    message: "Login Successfully",
-                    token: "Bearer " + token,
-                    username: person.username,
-                    userId: person._id,
-                    login: true
-                  });
+      if (person == null) {
+        res.json({
+          message: "Incorrect Username",
+          login: false,
+        });
+      } else {
+        console.log(person.password, password);
+        bcrypt.compare(password, person.password).then((isCorrect) => {
+          console.log(isCorrect);
+          if (isCorrect) {
+            const user = {
+              id: person._id,
+              username: person.username,
+            };
+            jwt.sign(
+              user,
+              process.env.JWT_SECRET,
+              { expiresIn: 86400 },
+              (err, token) => {
+                if (err) {
+                  console.log("oops!", err);
+                  console.log(JSON.stringify(user));
+                  return res.json({ message: err });
                 }
-              );
-            } else {
-              // res.send(
-              //   "Invalid password or username! You have no businesss being here. Pet smuggler"
-              // );
-              return res.json({message : "Login Unsuccessful",
-                                login: false})
-            }
+                return res.json({
+                  message: "Login Successfully",
+                  token: "Bearer " + token,
+                  username: person.username,
+                  userId: person._id,
+                  login: true,
+                });
+              }
+            );
+          } else {
+            return res.json({ message: "Login Unsuccessful", login: false });
+          }
         });
       }
     }
@@ -205,54 +197,51 @@ const addPet = async (req, res) => {
 //could use some work but currently just updates using the req body
 const updateUser = async (req, res) => {
   // const { id } = req.params
-  if(req.body.password != undefined)
-  {
-    
+  if (req.body.password != undefined) {
     req.body.password = bcrypt.hashSync(req.body.password, 10);
-    console.log(req.body.password)
-
+    console.log(req.body.password);
   }
-  
-  
+  const re = /.+\@.+\..+/;
+  if (req.body.email != undefined && !re.test(req.body.email)) {
+    console.log("Fake Email");
+    res.send("Invalid Email");
+  } else {
+    const userToUpdate = await db.User.findOneAndUpdate(
+      { username: req.user.username },
+      {
+        ...req.body,
+      }
+    );
 
-  const userToUpdate = await db.User.findOneAndUpdate(
-    { username: req.user.username },
-    {
-      ...req.body,
+    if (!userToUpdate) {
+      return res.status(400).json({ error: "No such User" });
     }
-  );
 
-  if (!userToUpdate) {
-    return res.status(400).json({ error: "No such User" });
+    const user = await db.User.findOne({ _id: req.user.id }).populate("pets");
+
+    res.status(200).json(user);
   }
-
-  const user = await db.User.findOne({ _id: req.user.id }).populate("pets");
-
-  res.status(200).json(user);
 };
 
 const addProfilePic = async (req, res) => {
-
   console.log(req.file);
-  if(req.file == null)
-  {
+  if (req.file == null) {
     return res.status(400);
   }
   // console.log(req);
-  cloudinary.v2.uploader.upload(req.file.path, async function (err, result){
+  cloudinary.v2.uploader.upload(req.file.path, async function (err, result) {
     if (err) {
       req.json(err.message);
     }
 
     const update = { picture: result.secure_url };
-    console.log(update)
+    console.log(update);
     const userToUpdate = await db.User.findOneAndUpdate(
       { _id: req.user.id },
       { picture: result.secure_url },
-      {new: true, strict:false}
+      { new: true, strict: false }
     );
-    console.log(result.secure_url)
-
+    console.log(result.secure_url);
 
     if (!userToUpdate) {
       return res.status(400).json({ error: "No such User" });
@@ -295,8 +284,7 @@ const addPetPic = async (req, res) => {
   const { id } = req.params;
 
   const pet = await db.Pet.findOne({ _id: id });
-  
-  
+
   for (const file of files) {
     console.log("hi there");
     await cloudinary.v2.uploader.upload(file.path, function (err, result) {

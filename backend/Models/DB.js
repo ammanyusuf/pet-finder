@@ -2,18 +2,8 @@ const mongoose = require("mongoose");
 
 const { Schema } = mongoose;
 
-// console.log('made it this far1');
-
-// main().catch(err => console.log(err));
-
-// console.log('made it this far2');
-
 const userSchema = Schema(
   {
-    // _id:{
-    //     type: Schema.Types.ObjectId,
-    //     required: true
-    // },
     name: {
       type: String,
       required: true,
