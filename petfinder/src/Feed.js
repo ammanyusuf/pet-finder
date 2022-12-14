@@ -3,6 +3,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select";
 import InputLabel from "@mui/material/InputLabel";
 import "./App.css";
 import Button from "@mui/material/Button";
+import Switch from '@mui/material/Switch';
 import TextField from "@mui/material/TextField";
 import MenuItem from "@mui/material/MenuItem";
 import { Grid } from "@mui/material";
@@ -11,7 +12,7 @@ const PostCard = lazy(() => import("./pages/Posts/PostCard"));
 const Feed = () => {
   const [posts, setPosts] = useState();
   const [sort, setSort] = useState("Date Lost");
-
+  const [resolved, setResolved] = useState(false);
   const [animal, setAnimal] = useState("");
   const [breed, setBreed] = useState("");
   const [name, setName] = useState("");
@@ -19,7 +20,10 @@ const Feed = () => {
   const [author, setAuthorName] = useState("");
 
   const handleFilter = async (e) => {
-    e.preventDefault();
+    
+    if(e !== undefined){
+      e.preventDefault();
+    }
     const data = {
       animal: animal,
       breed: breed,
@@ -40,11 +44,16 @@ const Feed = () => {
           console.log(result);
           let nonResolved = Array.from(result);
           console.log(nonResolved);
+          if(!resolved){
+            nonResolved = nonResolved.filter((x) => x.resolved === false);
+          }else{
+            nonResolved = nonResolved.filter((x) => x.resolved === true);
+          }
           // let nonResolved = Array.from(result);
           // nonResolved = nonResolved.filter((x) => x.resolved === false);
           let recentPosts = Array.from(nonResolved);
           recentPosts.sort(function (a, b) {
-            console.log(Date.parse(b.dateLost) - Date.parse(a.dateLost));
+            return (Date.parse(b.dateLost) - Date.parse(a.dateLost));
           });
           setPosts(recentPosts);
         });
@@ -74,7 +83,11 @@ const Feed = () => {
         .then(
           (result) => {
             let nonResolved = Array.from(result);
-            nonResolved = nonResolved.filter((x) => x.resolved === false);
+            if(!resolved){
+              nonResolved = nonResolved.filter((x) => x.resolved === false);
+            }else{
+              nonResolved = nonResolved.filter((x) => x.resolved === true);
+            }
             let recentPosts = Array.from(nonResolved);
             recentPosts.sort(function (a, b) {
               return Date.parse(b.dateLost) - Date.parse(a.dateLost);
@@ -89,6 +102,10 @@ const Feed = () => {
     fetchPosts();
   }, []);
 
+  useEffect(()=>{
+    handleFilter();
+},[resolved] )
+
   const clear = async (e) => {
     e.preventDefault();
     setAnimal("");
@@ -101,7 +118,11 @@ const Feed = () => {
         .then(
           (result) => {
             let nonResolved = Array.from(result);
-            nonResolved = nonResolved.filter((x) => x.resolved === false);
+            if(!resolved){
+              nonResolved = nonResolved.filter((x) => x.resolved === false);
+            }else{
+              nonResolved = nonResolved.filter((x) => x.resolved === true);
+            }
             let recentPosts = Array.from(nonResolved);
             recentPosts.sort(function (a, b) {
               return Date.parse(b.dateLost) - Date.parse(a.dateLost);
@@ -131,6 +152,18 @@ const Feed = () => {
       setSort(event.target.value);
       setPosts(tempPosts);
     }
+  };
+
+  const handleSwitch = () => {
+    console.log(resolved);
+    setResolved(!resolved);
+    // const timer = setTimeout(() => {
+    //   console.log(resolved);
+    //   handleFilter();
+    // }, 1000);
+
+   
+
   };
 
   return (
@@ -187,7 +220,18 @@ const Feed = () => {
                       onChange={(e) => setTags(e.target.value)}
                     />
                   </Grid>
-                  <Grid item xs={3}></Grid>
+                  <Grid item xs={3}>
+                    <InputLabel>
+                        Found
+                  </InputLabel>
+                    <Switch
+                      // label='Resolved Posts'
+                      size="xlarge"
+                      checked={resolved}
+                      onChange={() => handleSwitch()}
+                      // inputProps={{ 'aria-label': 'controlled' }}
+                    />
+                  </Grid>
                   <Grid item xs={3}>
                     <InputLabel id="demo-simple-select-label">
                       Sort By
