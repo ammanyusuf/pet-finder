@@ -15,7 +15,9 @@ import { FormHelperText, Grid } from "@mui/material";
 import { WithContext as ReactTags } from "react-tag-input";
 import { AuthContext } from "../../context/auth-context";
 
-import "./reactTags.css"
+import "./reactTags.css";
+
+import "../../App.css";
 
 const Alert = React.forwardRef(function Alert(props, ref) {
   return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
@@ -212,7 +214,7 @@ export const AddPet = () => {
       >
         <DialogTitle>Add a Pet!</DialogTitle>
         <DialogContent>
-          <Grid container spacing={2} alignItems="start" justifyContent={"center"}>
+          <Grid container spacing={2} alignItems="start" justifyContent={"center"} className={"petDialog"}>
             <Grid item xs={6} container spacing={2} direction="column">
               <Grid item xs={12}>
                 <TextField
