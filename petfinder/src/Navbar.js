@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Button from "@mui/material/Button";
 import { AuthContext } from "./context/auth-context";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import "./App.css";
 import "./navbar.css";
 import classnames from 'classnames';
@@ -18,30 +18,30 @@ export default function ButtonAppBar() {
       <AppBar position="static" sx={{backgroundColor: "#306BAC"}}>
         <Toolbar className={'sidebar'}>
           <img src={logo} alt="logo" className="sidebar-img" min-width={"100px"}/>
-          <Link to="/Home" >
+          <NavLink to="/Home" >
             Feed
-          </Link>
+          </NavLink>
           {auth.isLoggedIn && (
-            <Link
+            <NavLink
               to="/PostFeed"
             >
               MyPosts
-            </Link>
+            </NavLink>
           )}
           {auth.isLoggedIn && (
-            <Link
+            <NavLink
               to="/PetFeed"
             >
               MyPets
-            </Link>
+            </NavLink>
           )}
           {auth.isLoggedIn && (
-            <Link
+            <NavLink
               to="/Profile"
               id={'sidebar-name'}
             >
               {auth.name}
-            </Link>
+            </NavLink>
           )}
           {auth.isLoggedIn && (
             <Button className={'sidebar-button'} id={"sidebar-button"}
@@ -53,11 +53,11 @@ export default function ButtonAppBar() {
             </Button>
           )}
           {!auth.isLoggedIn && (
-            <Link
+            <NavLink
               to="/login"
             >
               Login
-            </Link>
+            </NavLink>
           )}
         </Toolbar>
       </AppBar>
