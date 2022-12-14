@@ -102,6 +102,7 @@ function App() {
   if (token) {
     routes = (
       <React.Fragment>
+        <Route element={<Feed />} path="/" />
         <Route element={<Feed />} path="/Home" />
         <Route element={<ViewPost />} path="/ViewPost" />
         <Route element={<UserPostFeed />} path="/PostFeed" />
@@ -116,6 +117,7 @@ function App() {
   } else {
     routes = (
       <React.Fragment>
+        <Route element={<Feed />} path="/" />
         <Route element={<LoginPage />} path="/login" />
         <Route element={<Feed />} path="/Home" />
         <Route element={<ViewPost />} path="/ViewPost" />
